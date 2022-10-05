@@ -19,6 +19,8 @@ class KeyInfoStorageWorker constructor(applicationContext: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
+    //TODO: add seed phrase, email address, OTP
+
     fun saveWalletData(walletData: WalletData) {
         with(sharedPreferences.edit()) {
             putString(VAULT_WALLET_PUBLIC_KEY, walletData.publicKey)
