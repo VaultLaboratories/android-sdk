@@ -11,7 +11,8 @@ class LitProtocolWorker(val encryptionWorker: EncryptionWorker) {
     val AUTH_SIGNATURE_BODY = "I am creating an account to use Lit Protocol at "
 
     fun genAuthSig(): AuthSig {
-        val now = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:mmm'Z'").format(Date(System.currentTimeMillis()))
+        val now =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:mmm'Z'").format(Date(System.currentTimeMillis()))
         val body = AUTH_SIGNATURE_BODY.plus(now)
         val wallet = encryptionWorker.generateWalletData()
 

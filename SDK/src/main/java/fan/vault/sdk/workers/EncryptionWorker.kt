@@ -24,7 +24,8 @@ class EncryptionWorker {
         val recoveredIv = encryptedBlob.slice(0..15).toByteArray()
         val encryptedZipArrayBuffer = encryptedBlob.slice(16..encryptedBlob.lastIndex).toByteArray()
         val secretKeySpec = SecretKeySpec(symmKey.toByteArray(), "AES")
-        val cipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING") //Possibly want "AES/CBC/NoPadding"
+        val cipher: Cipher =
+            Cipher.getInstance("AES/CBC/PKCS5PADDING") //Possibly want "AES/CBC/NoPadding"
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, IvParameterSpec(recoveredIv))
         return cipher.doFinal(encryptedZipArrayBuffer)
     }
