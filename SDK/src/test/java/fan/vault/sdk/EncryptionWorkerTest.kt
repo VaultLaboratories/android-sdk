@@ -10,7 +10,5 @@ class EncryptionWorkerTest {
         val encryptionWorker = EncryptionWorker()
         val wallet = encryptionWorker.generateWalletData()
 
-        println(wallet)
-
     }
 }
