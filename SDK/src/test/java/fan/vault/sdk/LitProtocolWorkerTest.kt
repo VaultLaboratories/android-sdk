@@ -18,11 +18,14 @@ class LitProtocolWorkerTest {
     @Test
     fun genAuthSig() {
         val litProtocolWorker = LitProtocolWorker(encryptionWorker)
-        val secKey = "c79e9539decb594857b978d85ea99b5b17bf345365a783b1476be780e76be8e9d4550b4ad199d5ab06fd8ab89dfd43e5f4623ee82b0f87c20ee6d232cb8791d2"
-        val wallet = Account(secKey.toByteArray())
+        val seeds = "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
+        val wallet = Account
+            .fromBip44MnemonicWithChange(seeds.split(" "), "")
+
         whenever(encryptionWorker.generateWalletData()).thenReturn(wallet)
         val authSig = litProtocolWorker.genAuthSig()
         println(authSig)
+        assertEquals("FHreS1zRRqDKYfkZzoCKCPyxPNqwFFCky15qWpcvZJTT", authSig.address)
 
     }
 }

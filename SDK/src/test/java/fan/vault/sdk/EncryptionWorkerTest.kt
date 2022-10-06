@@ -1,6 +1,8 @@
 package fan.vault.sdk
 
 import fan.vault.sdk.workers.EncryptionWorker
+import junit.framework.Assert.assertEquals
+import okio.ByteString.Companion.toByteString
 import org.junit.Test
 
 class EncryptionWorkerTest {
@@ -8,7 +10,10 @@ class EncryptionWorkerTest {
     @Test
     fun genWalletData(){
         val encryptionWorker = EncryptionWorker()
-        val wallet = encryptionWorker.generateWalletData()
+        val seedWords = "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
 
+        val wallet = encryptionWorker.generateWalletData(seedWords.split(" "))
+
+        assertEquals(wallet.publicKey.toBase58(), "FHreS1zRRqDKYfkZzoCKCPyxPNqwFFCky15qWpcvZJTT")
     }
 }

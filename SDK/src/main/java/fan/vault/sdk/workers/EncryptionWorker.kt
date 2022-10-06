@@ -7,11 +7,11 @@ import javax.crypto.spec.IvParameterSpec
 
 class EncryptionWorker {
 
-    fun generateWalletData(): Account {
+    fun generateWalletData(seeds: List<String>? = null): Account {
         //TODO: generate random list of words
-        val randomSeedWords = listOf("seed", "words", "here")
+        val seedWords = seeds ?: listOf("seed", "words", "here")
         return Account
-            .fromBip44MnemonicWithChange(randomSeedWords, "")
+            .fromBip44MnemonicWithChange(seedWords, "")
     }
 
     /**
