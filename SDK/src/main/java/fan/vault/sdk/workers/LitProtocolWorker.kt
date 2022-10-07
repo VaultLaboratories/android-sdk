@@ -5,12 +5,16 @@ import fan.vault.sdk.models.AccessControlConditions
 import fan.vault.sdk.models.AuthSig
 import fan.vault.sdk.models.EncryptionKeyRequest
 import fan.vault.sdk.models.EncryptionKeyResponse
+import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.bouncycastle.util.encoders.Hex
 import org.p2p.solanaj.utils.TweetNaclFast.Signature
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,16 +49,22 @@ class LitProtocolWorker(val encryptionWorker: EncryptionWorker) {
         val authSig = genAuthSig()
         val encryptionKeyRequest =
             EncryptionKeyRequest(authSig, accessConditions, encryptedSymmetricKey)
-        val body: RequestBody = mapper.writeValueAsString(encryptionKeyRequest).toRequestBody()
+        val body: RequestBody = mapper.writeValueAsString(encryptionKeyRequest).toRequestBody("application/json".toMediaType())
+        println(mapper.writeValueAsString(encryptionKeyRequest))
 
         val request = Request.Builder()
-            .url("https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/litprotocol/encryption-key")
+            .url(URL("https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/litprotocol/encryption-key"))
             .post(body)
             .build()
 
-        val response = client.newCall(request).execute()
+        runBlocking {
+            val response = client.newCall(request).execute()
 
-        println(mapper.writeValueAsString(response.body))
+            println(response)
+
+            println(mapper.writeValueAsString(response.body))
+        }
+
     }
 
 }

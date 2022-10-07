@@ -1,7 +1,6 @@
 package fan.vault.sdk.models
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import org.json.JSONObject
 
 data class EncryptionKeyResponse(val symmetricKey: String)
 
@@ -26,6 +25,6 @@ data class AccessControlConditions(
 data class ReturnValueTest(val key: String, val comparator: String, val value: String)
 
 @JsonSerialize
-data class PdaInterface(val offset: Number, val fields: String)
+data class PdaInterface(val offset: Number, val fields: EmptyObject)
 
-
+class EmptyObject

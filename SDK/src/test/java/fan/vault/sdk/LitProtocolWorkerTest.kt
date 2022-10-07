@@ -1,9 +1,7 @@
 package fan.vault.sdk
 
-import fan.vault.sdk.models.AccessControlConditions
-import fan.vault.sdk.models.AuthSig
-import fan.vault.sdk.models.PdaInterface
-import fan.vault.sdk.models.ReturnValueTest
+import com.google.protobuf.Empty
+import fan.vault.sdk.models.*
 import fan.vault.sdk.workers.EncryptionWorker
 import fan.vault.sdk.workers.LitProtocolWorker
 import junit.framework.Assert.assertEquals
@@ -49,7 +47,7 @@ class LitProtocolWorkerTest {
             "balanceOfMetaplexCollection",
             listOf("6mDdR4rGjF5MbF3V81VmZf3e7kJKAeemJasBnwqeiNH1"),
             listOf(),
-            PdaInterface(0, ""),
+            PdaInterface(0, EmptyObject()),
             "",
             "solanaDevnet",
             ReturnValueTest("", ">", "0")
