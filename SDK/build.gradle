@@ -40,6 +40,8 @@ dependencies {
     //implementation 'org.p2p:solanaj:1.6-SNAPSHOT'
     implementation 'com.mmorrell:solanaj:1.10'
     implementation 'org.purejava:tweetnacl-java:1.1.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.8.+'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.5.0'
