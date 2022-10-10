@@ -25,6 +25,6 @@ data class AccessControlConditions(
 data class ReturnValueTest(val key: String, val comparator: String, val value: String)
 
 @JsonSerialize
-data class PdaInterface(val offset: Number, val fields: EmptyObject)
+data class PdaInterface(val offset: Number, val fields: Map<String, Number>)
 
 class EmptyObject

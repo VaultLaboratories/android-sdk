@@ -41,7 +41,7 @@ class LitProtocolWorkerTest {
             "balanceOfMetaplexCollection",
             listOf("6mDdR4rGjF5MbF3V81VmZf3e7kJKAeemJasBnwqeiNH1"),
             listOf(),
-            PdaInterface(0, EmptyObject()),
+            PdaInterface(0, emptyMap()),
             "",
             "solanaDevnet",
             ReturnValueTest("", ">", "0")
