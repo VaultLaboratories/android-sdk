@@ -40,6 +40,12 @@ dependencies {
     //implementation 'org.p2p:solanaj:1.6-SNAPSHOT'
     implementation 'com.mmorrell:solanaj:1.10'
     implementation 'org.purejava:tweetnacl-java:1.1.2'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    // RxJava
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.8.+'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.5.0'
