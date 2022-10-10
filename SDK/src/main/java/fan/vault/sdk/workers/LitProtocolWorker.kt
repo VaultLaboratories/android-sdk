@@ -14,16 +14,18 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.bouncycastle.util.encoders.Hex
 import org.p2p.solanaj.utils.TweetNaclFast.Signature
+import retrofit2.Retrofit
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class LitProtocolWorker(val encryptionWorker: EncryptionWorker) {
 
     val AUTH_SIGNATURE_BODY = "I am creating an account to use Lit Protocol at "
 
-    private val client = OkHttpClient()
+    val api = ProteusAPIWorker.create()
     val mapper = jacksonObjectMapper()
     //val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 
@@ -45,26 +47,11 @@ class LitProtocolWorker(val encryptionWorker: EncryptionWorker) {
     fun getSymmetricKey(
         accessConditions: List<AccessControlConditions>,
         encryptedSymmetricKey: String
-    ) {
+    ): EncryptionKeyResponse {
         val authSig = genAuthSig()
         val encryptionKeyRequest =
             EncryptionKeyRequest(authSig, accessConditions, encryptedSymmetricKey)
-        val body: RequestBody = mapper.writeValueAsString(encryptionKeyRequest).toRequestBody("application/json".toMediaType())
-        println(mapper.writeValueAsString(encryptionKeyRequest))
-
-        val request = Request.Builder()
-            .url(URL("https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/litprotocol/encryption-key"))
-            .post(body)
-            .build()
-
-        runBlocking {
-            val response = client.newCall(request).execute()
-
-            println(response)
-
-            println(mapper.writeValueAsString(response.body))
-        }
-
+        return api.getEncryptionKey(encryptionKeyRequest).blockingGet()
     }
 
 }
