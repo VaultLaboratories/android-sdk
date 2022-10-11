@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import fan.vault.sdk.models.WalletData
+import org.bitcoinj.core.Base58
+import org.p2p.solanaj.core.Account
 
-class KeyInfoStorageWorker constructor(applicationContext: Context) {
+class StorageWorker constructor(applicationContext: Context) {
 
     private val mainKey = MasterKey.Builder(applicationContext)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
@@ -21,10 +22,10 @@ class KeyInfoStorageWorker constructor(applicationContext: Context) {
 
     //TODO: add seed phrase, email address, OTP
 
-    fun saveWalletData(walletData: WalletData) {
+    fun saveWallet(wallet: Account) {
         with(sharedPreferences.edit()) {
-            putString(VAULT_WALLET_PUBLIC_KEY, walletData.publicKey)
-            putString(VAULT_WALLET_PRIVATE_KEY, walletData.privateKey)
+            putString(VAULT_WALLET_PUBLIC_KEY, wallet.publicKey.toBase58())
+            putString(VAULT_WALLET_SECRET_KEY, Base58.encode(wallet.secretKey).toString())
             apply()
         }
     }
@@ -32,18 +33,18 @@ class KeyInfoStorageWorker constructor(applicationContext: Context) {
     fun removeWalletData() {
         with(sharedPreferences.edit()) {
             remove(VAULT_WALLET_PUBLIC_KEY)
-            remove(VAULT_WALLET_PRIVATE_KEY)
+            remove(VAULT_WALLET_SECRET_KEY)
             apply()
         }
     }
 
-    fun loadWalletData(): WalletData? {
+    fun loadWalletData(): Account? {
         with(sharedPreferences) {
             val publicKey = getString(VAULT_WALLET_PUBLIC_KEY, null)
-            val privateKey = getString(VAULT_WALLET_PRIVATE_KEY, null)
-            return when (publicKey != null && privateKey != null) {
-                true -> WalletData(publicKey, privateKey)
-                else -> null
+            val secretKey = getString(VAULT_WALLET_SECRET_KEY, null)
+            return when (publicKey != null && secretKey != null) {
+                true -> Account(Base58.decode(secretKey))
+                false -> null
             }
         }
     }
@@ -54,6 +55,6 @@ class KeyInfoStorageWorker constructor(applicationContext: Context) {
         internal const val PREF_FILE_NAME = "vault_sdk_pref_file"
 
         internal const val VAULT_WALLET_PUBLIC_KEY = "VAULT_WALLET_PUBLIC_KEY"
-        internal const val VAULT_WALLET_PRIVATE_KEY = "VAULT_WALLET_PRIVATE_KEY"
+        internal const val VAULT_WALLET_SECRET_KEY = "VAULT_WALLET_SECRET_KEY"
     }
 }
