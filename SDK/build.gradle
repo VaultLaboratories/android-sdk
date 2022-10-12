@@ -39,6 +39,8 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.1.1"
     //implementation 'org.p2p:solanaj:1.6-SNAPSHOT'
     implementation 'com.mmorrell:solanaj:1.10'
+    implementation 'com.github.metaplex-foundation:metaplex-android:1.2.0'
+
     implementation 'org.purejava:tweetnacl-java:1.1.2'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -57,6 +59,8 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    testImplementation("io.mockk:mockk:1.13.2")
 }
 
 afterEvaluate {
