@@ -22,10 +22,11 @@ class StorageWorker constructor(applicationContext: Context) {
 
     //TODO: add seed phrase, email address, OTP
 
-    fun saveWallet(wallet: Account) {
+    fun saveWallet(wallet: Pair<List<String>, Account>) {
         with(sharedPreferences.edit()) {
-            putString(VAULT_WALLET_PUBLIC_KEY, wallet.publicKey.toBase58())
-            putString(VAULT_WALLET_SECRET_KEY, Base58.encode(wallet.secretKey).toString())
+            putString(VAULT_WALLET_PUBLIC_KEY, wallet.second.publicKey.toBase58())
+            putString(VAULT_WALLET_SECRET_KEY, Base58.encode(wallet.second.secretKey).toString())
+            putString(VAULT_WALLET_SEED_PHRASE, wallet.first.toString())
             apply()
         }
     }
@@ -34,6 +35,7 @@ class StorageWorker constructor(applicationContext: Context) {
         with(sharedPreferences.edit()) {
             remove(VAULT_WALLET_PUBLIC_KEY)
             remove(VAULT_WALLET_SECRET_KEY)
+            remove(VAULT_WALLET_SEED_PHRASE)
             apply()
         }
     }
@@ -56,5 +58,6 @@ class StorageWorker constructor(applicationContext: Context) {
 
         internal const val VAULT_WALLET_PUBLIC_KEY = "VAULT_WALLET_PUBLIC_KEY"
         internal const val VAULT_WALLET_SECRET_KEY = "VAULT_WALLET_SECRET_KEY"
+        internal const val VAULT_WALLET_SEED_PHRASE = "VAULT_WALLET_SEED_PHRASE"
     }
 }
