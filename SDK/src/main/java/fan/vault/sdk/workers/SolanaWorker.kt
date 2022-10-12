@@ -1,58 +1,87 @@
 package fan.vault.sdk.workers
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.google.common.util.concurrent.MoreExecutors
 import com.metaplex.lib.Metaplex
 import com.metaplex.lib.drivers.indenty.ReadOnlyIdentityDriver
 import com.metaplex.lib.drivers.storage.OkHttpSharedStorageDriver
 import com.metaplex.lib.modules.nfts.models.NFT
 import com.metaplex.lib.solana.SolanaConnectionDriver
 import com.solana.networking.RPCEndpoint
-import fan.vault.sdk.models.Nft
-import org.p2p.solanaj.core.PublicKey
-import org.p2p.solanaj.rpc.RpcClient
+import fan.vault.sdk.models.JsonMetadataExt
+import fan.vault.sdk.models.NftTypes
+import fan.vault.sdk.models.NftWithArweave
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.Executors
 
-class SolanaWorker (val proteusWorker: ProteusWorker) {
-    val client = RpcClient(SOLANA_URL, 60)
+class SolanaWorker {
+    private val executor = Executors.newFixedThreadPool(10)
+    private val cache = mutableMapOf<String, NftWithArweave>()
 
-    suspend fun listNFTs(walletAddress: String): List<NFT>? {
+    suspend fun listNFTs(
+        walletAddress: String,
+        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM)
+    ): List<NftWithArweave> {
         val wallet = com.solana.core.PublicKey(walletAddress)
         val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solanaConnection.solanaRPC)
         val storageDriver = OkHttpSharedStorageDriver()
         val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
 
-        return metaplex.nft
+        val candidates = metaplex.nft
             .findAllByOwner(wallet)
             .getOrNull()
             ?.filterNotNull()
-//            ?.mapNotNull {
-//                Nft(
-//                    mint = it.mint.toBase58(),
-//                    name = it.name,
-//                    it.metadataAccount
-//                )
-//            }
 
+        val toLoad = candidates
+            ?.filterNot { cache.contains(it.mint.toBase58()) }
 
-//        val mints = client.api
-//            .getTokenAccountsByOwner(
-//                PublicKey(walletAddress),
-//                mapOf("programId" to TOKEN_PROGRAM_ID),
-//                emptyMap()
-//            )
-//            .value.orEmpty()
-//            .filter { it.account.data.parsed.info.tokenAmount.uiAmount.toLong() == 1L }
-//            .map { it.account.data.parsed.info.mint }
-//
-//        return proteusWorker.getNFTsMetadata(mints)
+        fetchArweaveMetadata(toLoad, allowedNftTypes)
+            .forEach { cache[it.nft.mint.toBase58()] = it }
+
+        return candidates
+            ?.mapNotNull { cache[it.mint.toBase58()] } ?: emptyList()
+    }
+
+    fun fetchArweaveMetadata(
+        nfts: List<NFT>?,
+        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM)
+    ): List<NftWithArweave> {
+        val service = MoreExecutors.listeningDecorator(executor)
+        val client = OkHttpClient()
+
+        return nfts
+            ?.map { nft ->
+                // we're using non-standard data in the files section so nft.metadata() in not usable
+                // at the moment. Once we have fully agreed standard, we can make contribution to the metaplex library
+                service.submit<NftWithArweave> {
+                    val request = Request.Builder()
+                        .url(nft.uri)
+                        .get()
+                        .build()
+
+                    val arweave: JsonMetadataExt? = client
+                        .newCall(request)
+                        .execute()
+                        .body?.string()
+                        ?.let { jacksonObjectMapper().readValue(it) }
+
+                    NftWithArweave(
+                        nft = nft,
+                        arweave = arweave
+                    )
+                }
+            }
+            ?.mapNotNull { it.get() }
+            ?.filter {
+                val type =
+                    it.arweave?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
+                allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
+            } ?: emptyList()
     }
 
     companion object {
         val solanaConnection = SolanaConnectionDriver(RPCEndpoint.devnetSolana)
-
-        const val TOKEN_PROGRAM_ID =
-            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" // program id owning metaplex created NFTs
-
-        //TODO move it as param
-        val SOLANA_URL =
-            "https://fragrant-dawn-snow.solana-devnet.quiknode.pro/8dc589896709f8ee050dbe7ef4d012a32957f520/"
     }
 }
