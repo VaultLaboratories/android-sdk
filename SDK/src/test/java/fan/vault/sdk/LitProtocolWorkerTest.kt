@@ -1,11 +1,9 @@
 package fan.vault.sdk
 
-import com.google.protobuf.Empty
 import fan.vault.sdk.models.*
 import fan.vault.sdk.workers.EncryptionWorker
 import fan.vault.sdk.workers.LitProtocolWorker
 import junit.framework.Assert.assertEquals
-import org.json.JSONObject
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
