@@ -14,8 +14,6 @@ import fan.vault.sdk.models.NftTypes
 import fan.vault.sdk.models.NftWithArweave
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.bitcoinj.crypto.MnemonicCode
-import org.p2p.solanaj.core.Account
 import java.util.concurrent.Executors
 
 class SolanaWorker {
