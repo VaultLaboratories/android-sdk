@@ -37,16 +37,20 @@ class SolanaWorker {
         val toLoad = candidates
             ?.filterNot { cache.contains(it.mint.toBase58()) }
 
-        fetchArweaveMetadata(toLoad, allowedNftTypes)
+        fetchArweaveMetadata(toLoad)
             .forEach { cache[it.nft.mint.toBase58()] = it }
 
         return candidates
-            ?.mapNotNull { cache[it.mint.toBase58()] } ?: emptyList()
+            ?.mapNotNull { cache[it.mint.toBase58()] }
+            ?.filter {
+                val type =
+                    it.arweave?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
+                allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
+            } ?: emptyList()
     }
 
     fun fetchArweaveMetadata(
-        nfts: List<NFT>?,
-        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM)
+        nfts: List<NFT>?
     ): List<NftWithArweave> {
         val service = MoreExecutors.listeningDecorator(executor)
         val client = OkHttpClient()
@@ -73,12 +77,7 @@ class SolanaWorker {
                     )
                 }
             }
-            ?.mapNotNull { it.get() }
-            ?.filter {
-                val type =
-                    it.arweave?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
-                allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
-            } ?: emptyList()
+            ?.mapNotNull { it.get() } ?: emptyList()
     }
 
     companion object {
