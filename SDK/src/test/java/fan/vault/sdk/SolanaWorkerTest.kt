@@ -38,7 +38,7 @@ class SolanaWorkerTest {
 
         runBlocking {
             val nfts = worker
-                .listNFTs("FHreS1zRRqDKYfkZzoCKCPyxPNqwFFCky15qWpcvZJTT") // We might need to consider using different wallet for test
+                .listNFTsWithMetadata("FHreS1zRRqDKYfkZzoCKCPyxPNqwFFCky15qWpcvZJTT") // We might need to consider using different wallet for test
 
             assertTrue(nfts.size >= 3)
         }
