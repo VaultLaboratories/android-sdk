@@ -4,8 +4,7 @@ import org.bitcoinj.crypto.MnemonicCode
 import org.p2p.solanaj.core.Account
 import java.util.*
 
-class WalletWorker {
-    private lateinit var wallet: StorageWorker
+class WalletWorker(val storageWorker: StorageWorker) {
 
     fun generateWalletData(seeds: List<String>? = null): Pair<List<String>, Account> {
         val b = ByteArray(16) // 128 bits is 12 seed words
@@ -16,9 +15,9 @@ class WalletWorker {
     }
 
     fun loadWallet(): Account {
-        wallet.loadWalletData()?.let { return it }
+        storageWorker.loadWalletData()?.let { return it }
         val newWallet = generateWalletData()
-        wallet.saveWallet(newWallet)
+        storageWorker.saveWallet(newWallet)
         return newWallet.second
     }
 }
