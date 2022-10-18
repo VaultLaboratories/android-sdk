@@ -1,19 +1,15 @@
 package fan.vault.sdk
 
-import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import fan.vault.sdk.workers.StorageWorker
 import fan.vault.sdk.workers.WalletWorker
 import junit.framework.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.mock
 
 class WalletWorkerTest {
 
     @Test
     fun genWalletData() {
-        val walletWorker = WalletWorker()
+        val walletWorker = WalletWorker(mock())
         val seedWords =
             "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
 
