@@ -1,11 +1,11 @@
 package fan.vault.sdk.workers
 
+import com.solana.vendor.TweetNaclFast
 import fan.vault.sdk.models.AccessControlConditions
 import fan.vault.sdk.models.AuthSig
 import fan.vault.sdk.models.EncryptionKeyRequest
 import fan.vault.sdk.models.EncryptionKeyResponse
 import org.bouncycastle.util.encoders.Hex
-import org.p2p.solanaj.utils.TweetNaclFast.Signature
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,8 +23,7 @@ class LitProtocolWorker(val walletWorker: WalletWorker) {
         val wallet = walletWorker.loadWallet()
 
         val data = body.toByteArray()
-        val signature =
-            Signature(wallet.publicKey.toByteArray(), wallet.secretKey).detached(data)
+        val signature = wallet.sign(data)
         val hexSig = Hex.toHexString(signature)
 
         return AuthSig(hexSig, "solana.signMessage", body, wallet.publicKey.toBase58())
@@ -39,5 +38,4 @@ class LitProtocolWorker(val walletWorker: WalletWorker) {
             EncryptionKeyRequest(authSig, accessConditions, encryptedSymmetricKey)
         return api.getEncryptionKey(encryptionKeyRequest).blockingGet()
     }
-
 }

@@ -1,13 +1,8 @@
 package fan.vault.sdk
 
-import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import fan.vault.sdk.workers.StorageWorker
 import fan.vault.sdk.workers.WalletWorker
 import junit.framework.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.whenever
 
 class WalletWorkerTest {
 

@@ -4,8 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import org.bitcoinj.core.Base58
-import org.p2p.solanaj.core.Account
+import com.solana.core.HotAccount
 
 class StorageWorker constructor(applicationContext: Context) {
 
@@ -22,11 +21,10 @@ class StorageWorker constructor(applicationContext: Context) {
 
     //TODO: add seed phrase, email address, OTP
 
-    fun saveWallet(wallet: Pair<List<String>, Account>) {
+    fun saveWallet(wallet: Pair<List<String>, HotAccount>) {
         with(sharedPreferences.edit()) {
             putString(VAULT_WALLET_PUBLIC_KEY, wallet.second.publicKey.toBase58())
-            putString(VAULT_WALLET_SECRET_KEY, Base58.encode(wallet.second.secretKey).toString())
-            putString(VAULT_WALLET_SEED_PHRASE, wallet.first.toString())
+            putString(VAULT_WALLET_SEED_PHRASE, wallet.first.joinToString(","))
             apply()
         }
     }
@@ -34,18 +32,16 @@ class StorageWorker constructor(applicationContext: Context) {
     fun removeWalletData() {
         with(sharedPreferences.edit()) {
             remove(VAULT_WALLET_PUBLIC_KEY)
-            remove(VAULT_WALLET_SECRET_KEY)
             remove(VAULT_WALLET_SEED_PHRASE)
             apply()
         }
     }
 
-    fun loadWalletData(): Account? {
+    fun loadWalletData(): HotAccount? {
         with(sharedPreferences) {
-            val publicKey = getString(VAULT_WALLET_PUBLIC_KEY, null)
-            val secretKey = getString(VAULT_WALLET_SECRET_KEY, null)
-            return when (publicKey != null && secretKey != null) {
-                true -> Account(Base58.decode(secretKey))
+            val seedPhrase = getString(VAULT_WALLET_SEED_PHRASE, null)
+            return when (seedPhrase != null) {
+                true -> HotAccount.fromMnemonic(seedPhrase.split(","), "")
                 false -> null
             }
         }
@@ -57,7 +53,6 @@ class StorageWorker constructor(applicationContext: Context) {
         internal const val PREF_FILE_NAME = "vault_sdk_pref_file"
 
         internal const val VAULT_WALLET_PUBLIC_KEY = "VAULT_WALLET_PUBLIC_KEY"
-        internal const val VAULT_WALLET_SECRET_KEY = "VAULT_WALLET_SECRET_KEY"
         internal const val VAULT_WALLET_SEED_PHRASE = "VAULT_WALLET_SEED_PHRASE"
     }
 }
