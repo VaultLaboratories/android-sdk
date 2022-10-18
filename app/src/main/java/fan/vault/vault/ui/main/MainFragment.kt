@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import fan.vault.vault.R
+import fan.vault.sdk.Vault
+import fan.vault.vault.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
 
@@ -15,17 +16,24 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainViewModel
+    private lateinit var binding: MainFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        binding = MainFragmentBinding.inflate(layoutInflater)
+        val view = binding.root
+        binding.getPublicKeyButton.setOnClickListener {
+            binding.getPublicKeyText.text = Vault.getAppWalletPublicKey()
+        }
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        context?.let { Vault.initialize(it) }
         // TODO: Use the ViewModel
     }
 
