@@ -9,10 +9,9 @@ import com.metaplex.lib.drivers.indenty.ReadOnlyIdentityDriver
 import com.metaplex.lib.drivers.storage.OkHttpSharedStorageDriver
 import com.metaplex.lib.modules.nfts.models.NFT
 import com.metaplex.lib.solana.SolanaConnectionDriver
-import com.solana.api.Api
-import com.solana.rxsolana.api.sendTransaction
+import com.solana.Solana
+import com.solana.api.sendRawTransaction
 import com.solana.core.Account
-import com.solana.core.SerializeConfig
 import com.solana.core.Transaction
 import com.solana.networking.OkHttpNetworkingRouter
 import com.solana.networking.RPCEndpoint
@@ -20,8 +19,6 @@ import fan.vault.sdk.models.JsonMetadataExt
 import fan.vault.sdk.models.NftTypes
 import fan.vault.sdk.models.NftWithMetadata
 import fan.vault.sdk.models.TransactionResponse
-import fan.vault.sdk.solana.sendRawTransaction
-import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
@@ -33,7 +30,7 @@ class SolanaWorker {
 
     suspend fun listNFTs(walletAddress: String): List<NFT> {
         val wallet = com.solana.core.PublicKey(walletAddress)
-        val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, rpc)
+        val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
         val storageDriver = OkHttpSharedStorageDriver()
         val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
 
@@ -91,18 +88,15 @@ class SolanaWorker {
         val decoded = Base64.decode(transactionResponse.hashTrx, Base64.DEFAULT)
         val transaction = Transaction.from(decoded)
 
-        val serialized = transaction.serialize(SerializeConfig(false, false))
-        val base64Trx: String = Base64.encodeToString(serialized, Base64.DEFAULT)
         transaction.partialSign(signer)
 
-//        val serialized = transaction.serialize()
-//        val base64Trx: String = Base64.encodeToString(serialized, Base64.DEFAULT)
+        val serialized = transaction.serialize()
 
-        return rpc.sendRawTransaction(base64Trx, onComplete)
+        solana.api.sendRawTransaction(serialized, onComplete = onComplete)
     }
 
     companion object {
+        val solana = Solana(OkHttpNetworkingRouter(RPCEndpoint.devnetSolana))
         val solanaConnection = SolanaConnectionDriver(RPCEndpoint.devnetSolana)
-        val rpc = Api(OkHttpNetworkingRouter(RPCEndpoint.devnetSolana))
     }
 }

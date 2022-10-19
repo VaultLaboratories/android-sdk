@@ -1,14 +1,17 @@
 package fan.vault.sdk
 
+import fan.vault.sdk.workers.StorageWorker
 import fan.vault.sdk.workers.WalletWorker
 import junit.framework.Assert.assertEquals
 import org.junit.Test
+import org.mockito.Mockito
 
 class WalletWorkerTest {
+    private val storageWorker = Mockito.mock(StorageWorker::class.java)
 
     @Test
     fun genWalletData() {
-        val walletWorker = WalletWorker()
+        val walletWorker = WalletWorker(storageWorker)
         val seedWords =
             "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
 
