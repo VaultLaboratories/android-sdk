@@ -27,6 +27,12 @@ class MainFragment : Fragment() {
         binding.getPublicKeyButton.setOnClickListener {
             binding.getPublicKeyText.text = Vault.getAppWalletPublicKey()
         }
+        binding.decryptFile.setOnClickListener {
+            binding.trackInfo.text = Vault.decryptFile()
+        }
+        binding.playPause.setOnClickListener {
+            Vault.playPauseMedia()
+        }
         return view
     }
 

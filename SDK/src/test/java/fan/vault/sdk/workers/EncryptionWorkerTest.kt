@@ -1,20 +1,18 @@
 package fan.vault.sdk.workers
 
 import org.junit.Assert.*
-import org.junit.Ignore
 import org.junit.Test
-import java.util.*
 
 class EncryptionWorkerTest {
 
-    @Ignore
     @Test
     fun `Can output a byte array`() {
-        val base64SymmetricKey = "VNYcQ7mDLOVlKwlATO3frpNgMASqRoSoa/ZLy9+eahY="
-        val symmetricKey = Base64.getDecoder().decode(base64SymmetricKey).toString()
+        val symmetricKey = "54d61c43b9832ce5652b09404ceddfae93603004aa4684a86bf64bcbdf9e6a16"
+        val file = this::class.java.classLoader.getResource("exampleEncryptedData").readBytes()
+
         val worker = EncryptionWorker()
-        val result = worker.decryptWithSymmetricKey(ByteArray(32), symmetricKey)
+        val result = worker.decryptWithSymmetricKey(file, symmetricKey)
         assertNotNull(result)
-        assertEquals(32, result.size)
+        assertEquals(9159350, result.size)
     }
 }
