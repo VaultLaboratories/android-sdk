@@ -15,8 +15,8 @@ pipelines:
           caches:
             - gradle
           script:
-            - gradle build
-            - gradle test
+            - ./gradlew build
+            - ./gradlew test
           after-script:
             - pipe: atlassian/checkstyle-report:0.3.0
       - step:
