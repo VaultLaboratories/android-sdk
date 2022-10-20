@@ -1,5 +1,6 @@
 package fan.vault.sdk
 
+import com.solana.core.HotAccount
 import fan.vault.sdk.models.*
 import fan.vault.sdk.workers.LitProtocolWorker
 import fan.vault.sdk.workers.WalletWorker
@@ -7,7 +8,6 @@ import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
-import org.p2p.solanaj.core.Account
 
 class LitProtocolWorkerTest {
 
@@ -18,8 +18,8 @@ class LitProtocolWorkerTest {
         val litProtocolWorker = LitProtocolWorker(walletWorker)
         val seeds =
             "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
-        val wallet = Account
-            .fromBip44MnemonicWithChange(seeds.split(" "), "")
+        val wallet = HotAccount
+            .fromMnemonic(seeds.split(" "), "")
 
         whenever(walletWorker.loadWallet()).thenReturn(wallet)
         val authSig = litProtocolWorker.genAuthSig()
@@ -33,8 +33,8 @@ class LitProtocolWorkerTest {
         val litProtocolWorker = LitProtocolWorker(walletWorker)
         val seeds =
             "transfer frown island economy raccoon champion wisdom talent tragic scrub kangaroo balcony twenty miracle soul bind abuse practice help crane betray enjoy artwork clever"
-        val wallet = Account
-            .fromBip44MnemonicWithChange(seeds.split(" "), "")
+        val wallet = HotAccount
+            .fromMnemonic(seeds.split(" "), "")
         val accessConditions = AccessControlConditions(
             "balanceOfMetaplexCollection",
             listOf("6mDdR4rGjF5MbF3V81VmZf3e7kJKAeemJasBnwqeiNH1"),
