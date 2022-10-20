@@ -2,9 +2,7 @@ package fan.vault.sdk
 
 import android.content.Context
 import android.media.MediaPlayer
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
-import fan.vault.sdk.models.NftWithMetadata
+
 import fan.vault.sdk.workers.EncryptionWorker
 import fan.vault.sdk.workers.StorageWorker
 import fan.vault.sdk.workers.WalletWorker
@@ -14,6 +12,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 object Vault {
 
@@ -23,7 +22,6 @@ object Vault {
     private val encryptionWorker = EncryptionWorker()
 
     private val executor = Executors.newFixedThreadPool(10)
-    private val service = MoreExecutors.listeningDecorator(executor)
 
     val mediaPlayer = MediaPlayer()
 
@@ -65,13 +63,13 @@ object Vault {
         }
     }
 
-    fun fetchEncryptedData(url: String): ListenableFuture<ByteArray> {
+    fun fetchEncryptedData(url: String): Future<ByteArray> {
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
             .get()
             .build()
-        return service.submit<ByteArray> {
+        return executor.submit<ByteArray> {
             client
                 .newCall(request)
                 .execute()

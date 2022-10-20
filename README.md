@@ -1,0 +1,12 @@
+### What is this repository for? ###
+
+* SDK for Solana on-chain and Proteus API interaction.
+
+### How to use ###
+
+### Claiming NFTs from social wallet to app wallet
+1. Request OneTimePassword for a user (method ProteusAPIWorker.requestOneTimePassword). ProteusAPI swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/mint/Otp
+2. Get social wallet address for user email address (method ProteusAPIWorker.getSocialWalletAddress). Proteus API swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/profiles/GetSocialWallet
+3. List NFTs owned by social wallet (method SolanaWorker.listNFTsWithMetadata)
+4. Request for each NFT partially signed transaction from ProteusAPI (method ProteusAPIWorker.getSocialToAppWalletClaimTransaction). Proteus API swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/mint/Transfer
+5. Sign and submit transaction (method SolanaWorker.signAndSendTransaction)
