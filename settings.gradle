@@ -11,6 +11,23 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            name = "GitHubPackages-SolanaKt"
+            url = "https://maven.pkg.github.com/MirekR/SolanaKT"
+            credentials {
+                username = "VaultLaboratories"
+                password = "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"
+            }
+        }
+
+        maven {
+            name = "GitHubPackages-Metaplex"
+            url = "https://maven.pkg.github.com/MirekR/metaplex-android"
+            credentials {
+                username = "VaultLaboratories"
+                password = "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"
+            }
+        }
     }
 }
 rootProject.name = "Vault Android SDK"

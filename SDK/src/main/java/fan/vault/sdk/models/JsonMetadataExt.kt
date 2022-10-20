@@ -40,5 +40,5 @@ data class JsonMetadataFileExt(
     val mimetype: String?,
     val name: String?,
     val encryptedSymmetricKey: String?,
-    val accessControlConditions: List<Map<*, *>>?
+    val accessControlConditions: List<AccessControlConditions>?
 )
