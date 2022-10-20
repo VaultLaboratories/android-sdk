@@ -1,4 +1,4 @@
-image: androidsdk/android-31
+image: alvrme/alpine-android:android-33-jdk8
 
 pipelines:
   default:
