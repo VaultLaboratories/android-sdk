@@ -22,11 +22,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
 
@@ -39,7 +39,9 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.1.1"
     implementation 'com.solana:solana:1.2.55'
 
-    implementation 'com.metaplex:metaplex:1.2.1'
+    implementation ("com.metaplex:metaplex:1.2.1") {
+        exclude group: "com.github.metaplex-foundation.SolanaKT", module: "solana"
+    }
     
     implementation 'org.purejava:tweetnacl-java:1.1.2'
     implementation 'com.google.code.gson:gson:2.8.9'

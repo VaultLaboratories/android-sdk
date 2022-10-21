@@ -1,11 +1,4 @@
-#  Template Java Gradle build
-
-#  This template allows you to test and build your Java project with Gradle.
-#  The workflow allows running tests, code checkstyle and security scans on the default branch.
-
-# Prerequisites: appropriate project structure should exist in the repository.
-
-image: gradle:6.6.0-jdk11
+image: androidsdk/android-31
 
 pipelines:
   default:
@@ -15,7 +8,6 @@ pipelines:
           caches:
             - gradle
           script:
-            - ./gradlew build
             - ./gradlew test
           after-script:
             - pipe: atlassian/checkstyle-report:0.3.0
