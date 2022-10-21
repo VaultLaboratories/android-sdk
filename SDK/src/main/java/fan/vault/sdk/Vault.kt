@@ -2,8 +2,8 @@ package fan.vault.sdk
 
 import android.content.Context
 import android.media.MediaPlayer
+import fan.vault.sdk.workers.LitProtocolWorker
 
-import fan.vault.sdk.workers.EncryptionWorker
 import fan.vault.sdk.workers.StorageWorker
 import fan.vault.sdk.workers.WalletWorker
 import okhttp3.OkHttpClient
@@ -19,7 +19,7 @@ object Vault {
     private var applicationContext: Context? = null
     private lateinit var storageWorker: StorageWorker
     private lateinit var walletWorker: WalletWorker
-    private val encryptionWorker = EncryptionWorker()
+    private val litProtocolWorker = LitProtocolWorker(walletWorker)
 
     private val executor = Executors.newFixedThreadPool(10)
 
@@ -41,7 +41,7 @@ object Vault {
 
         val data = fetchEncryptedData(url).get()
 
-        val decryptedFile = encryptionWorker.decryptWithSymmetricKey(data, symmetricKey)
+        val decryptedFile = litProtocolWorker.decryptWithSymmetricKey(data, symmetricKey)
 
         val tempMp3: File = File.createTempFile("kurchina", "mp3")
         tempMp3.deleteOnExit()

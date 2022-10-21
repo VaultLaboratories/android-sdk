@@ -1,10 +1,9 @@
-package fan.vault.sdk
+package fan.vault.sdk.workers
 
 import com.solana.core.HotAccount
 import fan.vault.sdk.models.*
-import fan.vault.sdk.workers.LitProtocolWorker
-import fan.vault.sdk.workers.WalletWorker
 import junit.framework.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
@@ -25,7 +24,6 @@ class LitProtocolWorkerTest {
         val authSig = litProtocolWorker.genAuthSig()
         println(authSig)
         assertEquals("FHreS1zRRqDKYfkZzoCKCPyxPNqwFFCky15qWpcvZJTT", authSig.address)
-
     }
 
     @Test(timeout = 60000)
@@ -54,5 +52,16 @@ class LitProtocolWorkerTest {
             "54d61c43b9832ce5652b09404ceddfae93603004aa4684a86bf64bcbdf9e6a16",
             encryptionKeyResponse.symmetricKey
         )
+    }
+
+    @Test
+    fun `Can output a byte array`() {
+        val litProtocolWorker = LitProtocolWorker(walletWorker)
+        val symmetricKey = "54d61c43b9832ce5652b09404ceddfae93603004aa4684a86bf64bcbdf9e6a16"
+        val file = this::class.java.classLoader.getResource("exampleEncryptedData").readBytes()
+
+        val result = litProtocolWorker.decryptWithSymmetricKey(file, symmetricKey)
+        Assert.assertNotNull(result)
+        Assert.assertEquals(9159350, result.size)
     }
 }

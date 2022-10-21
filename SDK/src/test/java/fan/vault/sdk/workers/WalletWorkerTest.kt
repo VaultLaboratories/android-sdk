@@ -1,7 +1,5 @@
-package fan.vault.sdk
+package fan.vault.sdk.workers
 
-import fan.vault.sdk.workers.StorageWorker
-import fan.vault.sdk.workers.WalletWorker
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito
