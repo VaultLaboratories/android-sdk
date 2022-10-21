@@ -1,11 +1,8 @@
-package fan.vault.sdk
+package fan.vault.sdk.workers
 
 import android.util.Base64
 
 import fan.vault.sdk.models.TransactionResponse
-import fan.vault.sdk.workers.SolanaWorker
-import fan.vault.sdk.workers.StorageWorker
-import fan.vault.sdk.workers.WalletWorker
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.slot
