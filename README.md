@@ -8,5 +8,6 @@
 1. Request OneTimePassword for a user (method ProteusAPIWorker.requestOneTimePassword). ProteusAPI swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/mint/Otp
 2. Get social wallet address for user email address (method ProteusAPIWorker.getSocialWalletAddress). Proteus API swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/profiles/GetSocialWallet
 3. List NFTs owned by social wallet (method SolanaWorker.listNFTsWithMetadata)
-4. Request for each NFT partially signed transaction from ProteusAPI (method ProteusAPIWorker.getSocialToAppWalletClaimTransaction). Proteus API swagger: https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/v0/docs/#/mint/Transfer
-5. Sign and submit transaction (method SolanaWorker.signAndSendTransaction)
+4. For each NFT claim call ClaimNFTWorker.claim
+   1. It requests transfer transaction from the ProteusAPI
+   2. Call Solana.signAndSendTransaction
