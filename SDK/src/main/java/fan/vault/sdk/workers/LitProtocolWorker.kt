@@ -4,6 +4,7 @@ import fan.vault.sdk.models.AccessControlConditions
 import fan.vault.sdk.models.AuthSig
 import fan.vault.sdk.models.EncryptionKeyRequest
 import fan.vault.sdk.models.EncryptionKeyResponse
+import io.reactivex.rxjava3.core.Single
 import okio.ByteString.Companion.decodeHex
 import org.bouncycastle.util.encoders.Hex
 import java.text.SimpleDateFormat
@@ -32,13 +33,13 @@ class LitProtocolWorker(val walletWorker: WalletWorker) {
     }
 
     fun getSymmetricKey(
+        authSig: AuthSig,
         accessConditions: List<AccessControlConditions>,
         encryptedSymmetricKey: String
-    ): EncryptionKeyResponse {
-        val authSig = genAuthSig()
+    ): Single<EncryptionKeyResponse> {
         val encryptionKeyRequest =
             EncryptionKeyRequest(authSig, accessConditions, encryptedSymmetricKey)
-        return api.getEncryptionKey(encryptionKeyRequest).blockingGet()
+        return api.getEncryptionKey(encryptionKeyRequest)
     }
 
     /**

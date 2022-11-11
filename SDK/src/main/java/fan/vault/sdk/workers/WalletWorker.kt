@@ -1,6 +1,5 @@
 package fan.vault.sdk.workers
 
-import com.solana.core.Account
 import com.solana.core.HotAccount
 import org.bitcoinj.crypto.MnemonicCode
 import java.util.*

@@ -18,7 +18,6 @@ import com.solana.networking.RPCEndpoint
 import fan.vault.sdk.models.JsonMetadataExt
 import fan.vault.sdk.models.NftTypes
 import fan.vault.sdk.models.NftWithMetadata
-import fan.vault.sdk.models.TransactionResponse
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
@@ -84,8 +83,8 @@ class SolanaWorker {
         }
     }
 
-    fun signAndSendTransaction(transactionResponse: TransactionResponse, signer: Account, onComplete: (Result<String>) -> Unit) {
-        val decoded = Base64.decode(transactionResponse.hashTrx, Base64.DEFAULT)
+    fun signAndSendTransaction(base64EncodedTransaction: String, signer: Account, onComplete: (Result<String>) -> Unit) {
+        val decoded = Base64.decode(base64EncodedTransaction, Base64.DEFAULT)
         val transaction = Transaction.from(decoded)
 
         transaction.partialSign(signer)
