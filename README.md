@@ -2,23 +2,22 @@
 
 * SDK for Solana on-chain and Proteus API interaction.
 
-### How to import in your project ###
+### How to import in your project (Groovy)###
 
-1. Add the following to `settings.gradle` file (Groovy):
+1. Add the following to `settings.gradle` file:
    ``` 
    ...
    repositories {
          ...
         maven { url 'https://jitpack.io' }
-    }```
+    }
    
 2. Add dependency to `build.gradle`:
    ```
    dependencies {
     ...
        implementation 'fan.vault.sdk:android-sdk:versionNumber'
-   }```
-   
+   }
 
 ### How to use ###
 
