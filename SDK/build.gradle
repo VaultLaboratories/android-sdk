@@ -67,9 +67,9 @@ afterEvaluate {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                groupId = 'fan.vault'
+                groupId = 'fan.vault.sdk'
                 artifactId = 'android-sdk'
-                version = '0.1'
+                version = '0.0.0'
             }
         }
     }
