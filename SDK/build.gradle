@@ -63,6 +63,15 @@ dependencies {
 
 afterEvaluate {
     publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.vault'
+                artifactId = 'android-sdk'
+                version = '1.0.1'
+            }
+        }
         repositories {
             maven {
                 name = "GitHubPackages"
