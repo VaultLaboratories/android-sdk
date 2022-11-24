@@ -31,6 +31,6 @@ dependencyResolutionManagement {
 
     }
 }
-rootProject.name = "Vault Android SDK"
+rootProject.name = "VaultAndroidSDK"
 include ':app'
 include ':SDK'
