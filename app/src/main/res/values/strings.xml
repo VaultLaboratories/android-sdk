@@ -3,4 +3,6 @@
     <string name="get_public_key">Get Public Key</string>
     <string name="decrypt_file">Decrypt File</string>
     <string name="play">Play</string>
+    <string name="save_otp">Save OTP</string>
+    <string name="get_otp">Get OTP</string>
 </resources>

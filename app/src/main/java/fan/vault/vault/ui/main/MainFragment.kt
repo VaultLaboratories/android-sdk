@@ -33,6 +33,14 @@ class MainFragment : Fragment() {
         binding.playPause.setOnClickListener {
             Vault.playPauseMedia()
         }
+        binding.getOtpButton.setOnClickListener {
+            binding.otpInput.setText(Vault.getOtp() ?: "Not found")
+        }
+        binding.saveOtpButton.setOnClickListener {
+            Vault.saveOtp(binding.otpInput.text.toString())
+            binding.otpInput.setText("")
+        }
+
         return view
     }
 

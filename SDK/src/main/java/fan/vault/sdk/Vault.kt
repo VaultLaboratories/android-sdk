@@ -19,7 +19,7 @@ object Vault {
     private var applicationContext: Context? = null
     private lateinit var storageWorker: StorageWorker
     private lateinit var walletWorker: WalletWorker
-    private val litProtocolWorker = LitProtocolWorker(walletWorker)
+    private val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
 
     private val executor = Executors.newFixedThreadPool(10)
 
@@ -76,5 +76,9 @@ object Vault {
                 .body?.bytes()
         }
     }
+
+    fun getOtp(): String? = storageWorker.loadOtp()
+
+    fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
 }

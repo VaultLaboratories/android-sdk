@@ -19,7 +19,7 @@ class StorageWorker constructor(applicationContext: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    //TODO: add seed phrase, email address, OTP
+    //TODO: add seed phrase, email address
 
     fun saveWallet(wallet: Pair<List<String>, HotAccount>) {
         with(sharedPreferences.edit()) {
@@ -47,6 +47,16 @@ class StorageWorker constructor(applicationContext: Context) {
         }
     }
 
+    fun saveOtp(otp: String) {
+        with(sharedPreferences.edit()) {
+            putString(VAULT_USER_DEVICE_OTP, otp)
+            apply()
+        }
+    }
+
+    fun loadOtp(): String? = sharedPreferences.getString(VAULT_USER_DEVICE_OTP, null)
+
+
     fun clearAllStoredInfo() = sharedPreferences.edit().clear().apply()
 
     companion object {
@@ -54,5 +64,7 @@ class StorageWorker constructor(applicationContext: Context) {
 
         internal const val VAULT_WALLET_PUBLIC_KEY = "VAULT_WALLET_PUBLIC_KEY"
         internal const val VAULT_WALLET_SEED_PHRASE = "VAULT_WALLET_SEED_PHRASE"
+        internal const val VAULT_USER_DEVICE_OTP = "VAULT_USER_DEVICE_OTP"
+
     }
 }
