@@ -9,12 +9,14 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
         maven {
             name = "GitHubPackages-SolanaKt"
             url = "https://maven.pkg.github.com/MirekR/SolanaKT"
             credentials {
                 username = "anthonydmevault"
-                password = ""//System.getenv("REPO_ACCESS_TOKEN")
+                password = System.getenv("REPO_ACCESS_TOKEN")
             }
         }
 
@@ -23,11 +25,10 @@ dependencyResolutionManagement {
             url = "https://maven.pkg.github.com/MirekR/metaplex-android"
             credentials {
                 username = "anthonydmevault"
-                password = ""//System.getenv("REPO_ACCESS_TOKEN")
+                password = System.getenv("REPO_ACCESS_TOKEN")
             }
         }
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
+
     }
 }
 rootProject.name = "Vault Android SDK"
