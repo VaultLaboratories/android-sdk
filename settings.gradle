@@ -15,8 +15,8 @@ dependencyResolutionManagement {
             name = "GitHubPackages-SolanaKt"
             url = "https://maven.pkg.github.com/MirekR/SolanaKT"
             credentials {
-                username = "VaultLaboratories"
-                password = "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"
+                username = "anthonydmevault"
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
 
@@ -24,8 +24,8 @@ dependencyResolutionManagement {
             name = "GitHubPackages-Metaplex"
             url = "https://maven.pkg.github.com/MirekR/metaplex-android"
             credentials {
-                username = "VaultLaboratories"
-                password = "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"
+                username = "anthonydmevault"
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
