@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             url = "https://maven.pkg.github.com/MirekR/SolanaKT"
             credentials {
                 username = "anthonydmevault"
-                password = System.getenv("GITHUB_TOKEN")
+                password = System.getenv("REPO_ACCESS_TOKEN")
             }
         }
 
@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             url = "https://maven.pkg.github.com/MirekR/metaplex-android"
             credentials {
                 username = "anthonydmevault"
-                password = System.getenv("GITHUB_TOKEN")
+                password = System.getenv("REPO_ACCESS_TOKEN")
             }
         }
     }
