@@ -32,11 +32,11 @@ class LitProtocolWorker(val walletWorker: WalletWorker) {
         return AuthSig(hexSig, "solana.signMessage", body, wallet.publicKey.toBase58())
     }
 
-    fun getSymmetricKey(
+    suspend fun getSymmetricKey(
         authSig: AuthSig,
         accessConditions: List<AccessControlConditions>,
         encryptedSymmetricKey: String
-    ): Single<EncryptionKeyResponse> {
+    ): EncryptionKeyResponse {
         val encryptionKeyRequest =
             EncryptionKeyRequest(authSig, accessConditions, encryptedSymmetricKey)
         return api.getEncryptionKey(encryptionKeyRequest)

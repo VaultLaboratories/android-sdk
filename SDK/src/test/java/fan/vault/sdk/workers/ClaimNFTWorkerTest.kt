@@ -2,11 +2,13 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import com.solana.core.HotAccount
+import fan.vault.sdk.models.SocialWalletResponse
 import fan.vault.sdk.models.TransactionResponse
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.slot
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -48,34 +50,51 @@ class ClaimNFTWorkerTest {
 
         val worker = instance()
 
-        whenever(
-            worker.proteusAPIWorker.getSocialToAppWalletClaimTransaction(
-                userEmailAddress = userEmailAddress,
-                appWallet = appWallet.publicKey.toBase58(),
-                mint = mint.toBase58(),
-                otp = otp
-            )
-        ).thenReturn(
-            Single.just(
+        runBlocking {
+            whenever(
+                worker.proteusAPIWorker.getSocialToAppWalletClaimTransaction(
+                    userEmailAddress = userEmailAddress,
+                    appWallet = appWallet.publicKey.toBase58(),
+                    mint = mint.toBase58(),
+                    otp = otp
+                )
+            ).thenReturn(
                 TransactionResponse("AowfOvMIGMKpHdSMkJngzXiF+R1nhZpXl4ead8v9j2KMRNGWxw4ORAEMBxVDHauoPybbYzxE8DxwVkGNSlpHJA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAGDE1NcOheAvyv+bxRcoAAg+MRGtu2bkAm/5wdXQJ8rken1FULStGZ1asG/Yq4nf1D5fRiPugrD4fCDubSMsuHkdIayMAB688AuwbzoF9XnkQFo2FzCNJXzqL54DE6mJ3jcVhQyOsVuOXyU8XVGmOO2ep3vzbZGM4vgpLvjEcAM00J+V3TgVRf23jeOe/lnzkzO6KxIRRsdiBzWWuNQTu8yH/6ZEwlvNmeorQ162ZCz63Oge4CfDiNpiav1AqEyomoh3Fva1OSac1YjEGTGcfA31cfJcQU3+q9HrQZS+lxomSRdvMm5PB133e9DwijLEt6TSX1hyKy/MHeJpT5sgfx0Q6rTKN/L2kwSCbxyvNbI19PNeLYInltDmx6X1AtAMntzsjbHnHIO/C4BzQArccr6sxzJRGosQj9TDQA5uKlJYJ+C3BlsePRfEU4nVJ/awTDzVi4bHMaoP21SbbRvAP4KUYG3fbh12Whk9nL4UbO63msHLSF7V9bN5E6jPWFfv8AqS9th6tOQZlmjaIuFlZG82nyqa3jkyOF4l/umJZJMUYrAQcMAwQFAgABBggJCwsKQgxhNeMOztloLAAAAHE5N3A1TzE3VXRqWUVwRWI4UVd0Y0tXTi9hK0Q4MjI0OFhwOEdDNEFSczg9BgAAADEyMzQ1Ng==")
             )
-        )
 
-        kotlin.runCatching {
-            worker.claim(
-                nft = mint,
-                userEmailAddress = userEmailAddress,
-                appWallet = appWallet,
-                withOtp = otp
-            ).blockingGet()
-        }
-            .onFailure {
-                // We expect this one to fail as it has old blockhash
-                assertEquals(
-                    "invalidResponse(rpcError=RPCError(code=-32002, message=Transaction simulation failed: Blockhash not found))",
-                    it.message,
+            runCatching {
+                worker.claim(
+                    nft = mint,
+                    userEmailAddress = userEmailAddress,
+                    appWallet = appWallet,
+                    withOtp = otp
                 )
             }
+                .onFailure {
+                    // We expect this one to fail as it has old blockhash
+                    assertEquals(
+                        "Transaction simulation failed: Blockhash not found",
+                        it.message,
+                    )
+                }
+        }
+
+    }
+
+    @Test
+    fun shouldRetrieveClaimableNfts() {
+        val userEmail = "antClaimTest@vault.fan"
+        val wallet = SocialWalletResponse(
+            "FkSCg1x6n1cHPgEWMCM9kgXYJAzthM7z6opvzMMVzT4V",
+            "lwi5urADjo1i+5M0i2SjjBVphXjxqsOyX5FEwe0Wwb0="
+        )
+        val worker = instance()
+
+        runBlocking {
+            whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
+            val nfts = worker.getClaimableNfts(userEmail)
+            assertEquals("The Chicken Man Cometh #6", nfts.get(0).metadata?.name)
+        }
     }
 
     private fun instance() =
