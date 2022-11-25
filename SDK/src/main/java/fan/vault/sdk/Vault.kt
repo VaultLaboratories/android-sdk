@@ -2,10 +2,15 @@ package fan.vault.sdk
 
 import android.content.Context
 import android.media.MediaPlayer
-import fan.vault.sdk.workers.LitProtocolWorker
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.metaplex.lib.modules.nfts.models.NFT
+import fan.vault.sdk.models.JsonMetadataExt
+import fan.vault.sdk.models.NftWithMetadata
+import fan.vault.sdk.models.SocialWalletResponse
+import fan.vault.sdk.workers.*
 
-import fan.vault.sdk.workers.StorageWorker
-import fan.vault.sdk.workers.WalletWorker
+import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -20,6 +25,9 @@ object Vault {
     private lateinit var storageWorker: StorageWorker
     private lateinit var walletWorker: WalletWorker
     private val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
+    private val proteusAPIWorker by lazy { ProteusAPIWorker.create() }
+    private val proteusAPIWorkerCoroutines by lazy { ProteusAPIWorkerCoroutines.create() }
+    private val solanaWorker by lazy { SolanaWorker() }
 
     private val executor = Executors.newFixedThreadPool(10)
 
@@ -81,4 +89,9 @@ object Vault {
 
     fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
+    fun getSocialWallet(emailAddress: String): Single<SocialWalletResponse> = proteusAPIWorker.getSocialWalletAddress(emailAddress)
+
+    suspend fun getSocialWallet2(emailAddress: String): SocialWalletResponse = proteusAPIWorkerCoroutines.getSocialWalletAddress(emailAddress)
+
+    suspend fun getNftsForWalletAddress(walletAddress: String) = solanaWorker.listNFTsWithMetadata(walletAddress)
 }

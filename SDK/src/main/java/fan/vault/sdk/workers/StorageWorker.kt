@@ -56,7 +56,6 @@ class StorageWorker constructor(applicationContext: Context) {
 
     fun loadOtp(): String? = sharedPreferences.getString(VAULT_USER_DEVICE_OTP, null)
 
-
     fun clearAllStoredInfo() = sharedPreferences.edit().clear().apply()
 
     companion object {
@@ -65,6 +64,5 @@ class StorageWorker constructor(applicationContext: Context) {
         internal const val VAULT_WALLET_PUBLIC_KEY = "VAULT_WALLET_PUBLIC_KEY"
         internal const val VAULT_WALLET_SEED_PHRASE = "VAULT_WALLET_SEED_PHRASE"
         internal const val VAULT_USER_DEVICE_OTP = "VAULT_USER_DEVICE_OTP"
-
     }
 }

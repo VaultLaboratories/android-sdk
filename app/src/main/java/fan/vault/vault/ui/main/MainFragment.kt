@@ -2,12 +2,17 @@ package fan.vault.vault.ui.main
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import fan.vault.sdk.Vault
 import fan.vault.vault.databinding.MainFragmentBinding
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainFragment : Fragment() {
 
@@ -39,6 +44,20 @@ class MainFragment : Fragment() {
         binding.saveOtpButton.setOnClickListener {
             Vault.saveOtp(binding.otpInput.text.toString())
             binding.otpInput.setText("")
+        }
+        binding.getNftsInSocialWalletButton.setOnClickListener {
+            GlobalScope.launch {
+                val socialWallet = Vault.getSocialWallet2(binding.emailAddressInput.text.toString())
+                val nftsWithMetadata = Vault.getNftsForWalletAddress(socialWallet.wallet)
+                var output = ""
+                nftsWithMetadata.forEach {
+                    it.metadata?.name?.let { nftName ->
+                        output += nftName
+                        Log.d("Vault", nftName)
+                    }
+                }
+                binding.socialWalletNftsDisplay.text = output
+            }
         }
 
         return view

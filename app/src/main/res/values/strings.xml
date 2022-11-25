@@ -5,4 +5,6 @@
     <string name="play">Play</string>
     <string name="save_otp">Save OTP</string>
     <string name="get_otp">Get OTP</string>
+    <string name="email_address">Email Address:</string>
+    <string name="get_nfts">Get NFTs</string>
 </resources>
