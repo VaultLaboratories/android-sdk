@@ -1,6 +1,7 @@
 package fan.vault.sdk.workers
 
 import android.util.Base64
+import android.util.Log
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.metaplex.lib.Metaplex
@@ -82,7 +83,12 @@ class SolanaWorker {
                         metadata = arweave
                     )
                 }
-                    .onFailure { println("Failed to fetch arweave metadata for ${nft.mint.toBase58()}, it will be skipped!") }
+                    .onFailure {
+                        Log.i(
+                            "Proteus",
+                            "Failed to fetch arweave metadata for ${nft.mint.toBase58()}, it will be skipped!"
+                        )
+                    }
                     .getOrNull()
             }
         }
@@ -105,7 +111,8 @@ class SolanaWorker {
                     continuation.resumeWith(result)
                 }.onFailure {
                     continuation.resumeWithException(
-                        result.exceptionOrNull() ?: Throwable("Generic error message")
+                        result.exceptionOrNull()
+                            ?: Throwable("Stack trace for transaction error: ${it.stackTraceToString()}")
                     )
                 }
             }
