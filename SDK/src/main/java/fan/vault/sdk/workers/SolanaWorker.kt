@@ -3,7 +3,6 @@ package fan.vault.sdk.workers
 import android.util.Base64
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-
 import com.metaplex.lib.Metaplex
 import com.metaplex.lib.drivers.indenty.ReadOnlyIdentityDriver
 import com.metaplex.lib.drivers.storage.OkHttpSharedStorageDriver
@@ -18,6 +17,7 @@ import com.solana.networking.RPCEndpoint
 import fan.vault.sdk.models.JsonMetadataExt
 import fan.vault.sdk.models.NftTypes
 import fan.vault.sdk.models.NftWithMetadata
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
@@ -43,7 +43,7 @@ class SolanaWorker {
 
     suspend fun listNFTsWithMetadata(
         walletAddress: String,
-        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM)
+        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE)
     ): List<NftWithMetadata> {
         val candidates = listNFTs(walletAddress)
             .map { fetchArweaveMetadata(it) }
@@ -63,32 +63,34 @@ class SolanaWorker {
         // we're using non-standard data in the files section so nft.metadata() in not usable
         // at the moment. Once we have fully agreed standard, we can make contribution to the metaplex library
         return executor.submit<NftWithMetadata> {
-            val request = Request.Builder()
-                .url(nft.uri)
-                .get()
-                .build()
+            nft.uri.toHttpUrlOrNull()?.let {
+                Request.Builder()
+                    .url(it)
+                    .get()
+                    .build()
+            }?.let { request ->
+                kotlin.runCatching {
+                    val arweave: JsonMetadataExt? =
+                        client
+                            .newCall(request)
+                            .execute()
+                            .body?.string()
+                            ?.let { jacksonObjectMapper().readValue(it) }
 
-            kotlin.runCatching {
-                val arweave: JsonMetadataExt? = client
-                    .newCall(request)
-                    .execute()
-                    .body?.string()
-                    ?.let { jacksonObjectMapper().readValue(it) }
-
-                NftWithMetadata(
-                    nft = nft,
-                    metadata = arweave
-                )
+                    NftWithMetadata(
+                        nft = nft,
+                        metadata = arweave
+                    )
+                }
+                    .onFailure { println("Failed to fetch arweave metadata for ${nft.mint.toBase58()}, it will be skipped!") }
+                    .getOrNull()
             }
-                .onFailure { println("Failed to fetch arweave metadata for ${nft.mint.toBase58()}, it will be skipped!") }
-                .getOrNull()
         }
     }
 
     suspend fun signAndSendTransaction(
         base64EncodedTransaction: String,
-        signer: Account,
-        //onComplete: (Result<String>) -> Unit
+        signer: Account
     ): String? {
         val decoded = Base64.decode(base64EncodedTransaction, Base64.DEFAULT)
         val transaction = Transaction.from(decoded)

@@ -2,6 +2,7 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import com.solana.core.HotAccount
+import fan.vault.sdk.models.SocialWalletResponse
 import fan.vault.sdk.models.TransactionResponse
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -78,6 +79,22 @@ class ClaimNFTWorkerTest {
                 }
         }
 
+    }
+
+    @Test
+    fun shouldRetrieveClaimableNfts() {
+        val userEmail = "antClaimTest@vault.fan"
+        val wallet = SocialWalletResponse(
+            "FkSCg1x6n1cHPgEWMCM9kgXYJAzthM7z6opvzMMVzT4V",
+            "lwi5urADjo1i+5M0i2SjjBVphXjxqsOyX5FEwe0Wwb0="
+        )
+        val worker = instance()
+
+        runBlocking {
+            whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
+            val nfts = worker.getClaimableNfts(userEmail)
+            assertEquals("The Chicken Man Cometh #6", nfts.get(0).metadata?.name)
+        }
     }
 
     private fun instance() =
