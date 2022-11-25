@@ -22,6 +22,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class SolanaWorker {
     private val executor = Executors.newFixedThreadPool(10)
@@ -83,7 +85,11 @@ class SolanaWorker {
         }
     }
 
-    fun signAndSendTransaction(base64EncodedTransaction: String, signer: Account, onComplete: (Result<String>) -> Unit) {
+    suspend fun signAndSendTransaction(
+        base64EncodedTransaction: String,
+        signer: Account,
+        //onComplete: (Result<String>) -> Unit
+    ): String? {
         val decoded = Base64.decode(base64EncodedTransaction, Base64.DEFAULT)
         val transaction = Transaction.from(decoded)
 
@@ -91,7 +97,17 @@ class SolanaWorker {
 
         val serialized = transaction.serialize()
 
-        solana.api.sendRawTransaction(serialized, onComplete = onComplete)
+        return suspendCoroutine { continuation ->
+            solana.api.sendRawTransaction(serialized) { result ->
+                result.onSuccess {
+                    continuation.resumeWith(result)
+                }.onFailure {
+                    continuation.resumeWithException(
+                        result.exceptionOrNull() ?: Throwable("Generic error message")
+                    )
+                }
+            }
+        }
     }
 
     companion object {
