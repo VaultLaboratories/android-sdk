@@ -59,9 +59,12 @@ class SolanaWorkerTest {
 
         val wallet = WalletWorker(storageWorker).generateWalletData(seedWords.split(" "))
         runBlocking {
-            val transaction = worker.signAndSendTransaction(hashTrx, wallet.second)
-            // We expect this one to fail as it has old blockhash
-            assertNull(transaction)
+            kotlin.runCatching {
+                // We expect this one to fail as it has old blockhash
+                val transaction = worker.signAndSendTransaction(hashTrx, wallet.second)
+            }.onFailure {
+                assertEquals(it.message, "Transaction simulation failed: Blockhash not found")
+            }
         }
 
     }

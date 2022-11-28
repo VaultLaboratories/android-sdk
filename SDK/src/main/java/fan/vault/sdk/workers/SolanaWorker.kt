@@ -12,6 +12,7 @@ import com.metaplex.lib.solana.SolanaConnectionDriver
 import com.solana.Solana
 import com.solana.api.sendRawTransaction
 import com.solana.core.Account
+import com.solana.core.PublicKey
 import com.solana.core.Transaction
 import com.solana.networking.OkHttpNetworkingRouter
 import com.solana.networking.RPCEndpoint
@@ -31,7 +32,7 @@ class SolanaWorker {
     private val client = OkHttpClient()
 
     suspend fun listNFTs(walletAddress: String): List<NFT> {
-        val wallet = com.solana.core.PublicKey(walletAddress)
+        val wallet = PublicKey(walletAddress)
         val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
         val storageDriver = OkHttpSharedStorageDriver()
         val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)

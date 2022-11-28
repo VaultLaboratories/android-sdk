@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import fan.vault.sdk.Vault
+import fan.vault.sdk.client.Vault
 import fan.vault.vault.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
@@ -18,26 +18,23 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: MainFragmentBinding
 
+    private lateinit var vault: Vault
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = MainFragmentBinding.inflate(layoutInflater)
+
         val view = binding.root
         binding.getPublicKeyButton.setOnClickListener {
-            binding.getPublicKeyText.text = Vault.getAppWalletPublicKey()
-        }
-        binding.decryptFile.setOnClickListener {
-            binding.trackInfo.text = Vault.decryptFile()
-        }
-        binding.playPause.setOnClickListener {
-            Vault.playPauseMedia()
+            binding.getPublicKeyText.text = vault.getAppWalletPublicKey()
         }
         binding.getOtpButton.setOnClickListener {
-            binding.otpInput.setText(Vault.getOtp() ?: "Not found")
+            binding.otpInput.setText(vault.getOtp() ?: "Not found")
         }
         binding.saveOtpButton.setOnClickListener {
-            Vault.saveOtp(binding.otpInput.text.toString())
+            vault.saveOtp(binding.otpInput.text.toString())
             binding.otpInput.setText("")
         }
 
@@ -47,7 +44,9 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        context?.let { Vault.initialize(it) }
+        context?.let {
+            vault = Vault(it)
+        }
         // TODO: Use the ViewModel
     }
 

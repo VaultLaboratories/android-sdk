@@ -21,7 +21,7 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         }
     }
 
-    suspend fun getClaimableNfts(userEmailAddress: String): List<NftWithMetadata> =
+    suspend fun getClaimableNfts(userEmailAddress: String): List<NftWithMetadata?> =
         proteusAPIWorker.getSocialWalletAddress(userEmailAddress).let {
             solanaWorker.listNFTsWithMetadata(it.wallet)
         }
