@@ -1,6 +1,5 @@
 package fan.vault.vault.ui.main
 
-import android.media.MediaPlayer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,11 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import fan.vault.sdk.Vault
 import fan.vault.vault.databinding.MainFragmentBinding
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 class MainFragment : Fragment() {
 
