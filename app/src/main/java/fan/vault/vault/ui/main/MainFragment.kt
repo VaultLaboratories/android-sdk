@@ -46,7 +46,6 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         context?.let {
             vault = Vault(it)
-            vault.initialize()
         }
         // TODO: Use the ViewModel
     }

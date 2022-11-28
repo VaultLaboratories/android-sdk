@@ -19,16 +19,11 @@ import java.util.concurrent.Future
 
 class VaultRx(val applicationContext: Context) {
 
-    private lateinit var storageWorker: StorageWorker
-    private lateinit var walletWorker: WalletWorker
+    private val storageWorker by lazy { StorageWorker(applicationContext) }
+    private val walletWorker by lazy { WalletWorker(storageWorker) }
+    private val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
     private lateinit var claimNFTWorker: ClaimNFTWorker
     private lateinit var proteusAPIWorker: ProteusAPIWorker
-    private val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
-
-    fun initialize() {
-        storageWorker = StorageWorker(applicationContext)
-        walletWorker = WalletWorker(storageWorker)
-    }
 
     fun getAppWalletPublicKey(): String = walletWorker.loadWallet().publicKey.toString()
 
