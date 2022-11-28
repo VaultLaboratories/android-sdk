@@ -1,4 +1,4 @@
-package fan.vault.sdk
+package fan.vault.sdk.client
 
 import android.content.Context
 import android.media.MediaPlayer
@@ -17,15 +17,7 @@ import java.io.FileOutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-class VaultRx(val applicationContext: Context) {
-
-    private val storageWorker by lazy { StorageWorker(applicationContext) }
-    private val walletWorker by lazy { WalletWorker(storageWorker) }
-    private val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
-    private lateinit var claimNFTWorker: ClaimNFTWorker
-    private lateinit var proteusAPIWorker: ProteusAPIWorker
-
-    fun getAppWalletPublicKey(): String = walletWorker.loadWallet().publicKey.toString()
+class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
 
     fun requestGenerateOtp(emailAddress: String) =
         rxSingle {
@@ -36,11 +28,6 @@ class VaultRx(val applicationContext: Context) {
                 )
             )
         }
-
-
-    fun getOtp(): String? = storageWorker.loadOtp()
-
-    fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
     fun listClaimableNftsLinkedTo(emailAddress: String) =
         rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
