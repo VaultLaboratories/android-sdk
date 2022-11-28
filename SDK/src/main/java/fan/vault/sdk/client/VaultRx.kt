@@ -29,7 +29,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
             )
         }
 
-    fun listClaimableNftsLinkedTo(emailAddress: String) =
+    suspend fun listClaimableNftsLinkedTo(emailAddress: String) =
         rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
 
     fun initiateClaimNFTLinkedTo(
