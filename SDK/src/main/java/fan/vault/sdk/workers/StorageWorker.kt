@@ -56,7 +56,6 @@ class StorageWorker constructor(applicationContext: Context) {
 
     fun loadOtp(): String? = sharedPreferences.getString(VAULT_USER_DEVICE_OTP, null)
 
-
     fun clearAllStoredInfo() = sharedPreferences.edit().clear().apply()
 
     companion object {

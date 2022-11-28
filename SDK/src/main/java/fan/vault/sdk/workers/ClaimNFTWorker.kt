@@ -1,16 +1,19 @@
 package fan.vault.sdk.workers
 
-import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.NftWithMetadata
 
-class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: SolanaWorker) {
+class ClaimNFTWorker(
+    val proteusAPIWorker: ProteusAPIWorker,
+    val solanaWorker: SolanaWorker,
+    val walletWorker: WalletWorker
+) {
     suspend fun claim(
         nft: PublicKey,
         userEmailAddress: String,
-        appWallet: Account,
         withOtp: String
     ): String? {
+        val appWallet = walletWorker.loadWallet()
         return proteusAPIWorker.getSocialToAppWalletClaimTransaction(
             userEmailAddress = userEmailAddress,
             appWallet = appWallet.publicKey.toBase58(),
@@ -21,7 +24,7 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         }
     }
 
-    suspend fun getClaimableNfts(userEmailAddress: String): List<NftWithMetadata> =
+    suspend fun getClaimableNfts(userEmailAddress: String): List<NftWithMetadata?> =
         proteusAPIWorker.getSocialWalletAddress(userEmailAddress).let {
             solanaWorker.listNFTsWithMetadata(it.wallet)
         }
