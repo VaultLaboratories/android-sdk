@@ -6,6 +6,8 @@ import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.OneTimePasswordRequest
 import fan.vault.sdk.workers.*
+import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.rx3.rxSingle
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,7 +17,7 @@ import java.io.FileOutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-class Vault(val applicationContext: Context) {
+class VaultRx(val applicationContext: Context) {
 
     private lateinit var storageWorker: StorageWorker
     private lateinit var walletWorker: WalletWorker
@@ -30,29 +32,32 @@ class Vault(val applicationContext: Context) {
 
     fun getAppWalletPublicKey(): String = walletWorker.loadWallet().publicKey.toString()
 
-    suspend fun requestGenerateOtp(emailAddress: String) =
-        proteusAPIWorker.requestOneTimePassword(
-            OneTimePasswordRequest(
-                emailAddress,
-                walletWorker.loadWallet().publicKey.toBase58()
+    fun requestGenerateOtp(emailAddress: String) =
+        rxSingle {
+            proteusAPIWorker.requestOneTimePassword(
+                OneTimePasswordRequest(
+                    emailAddress,
+                    walletWorker.loadWallet().publicKey.toBase58()
+                )
             )
-        )
+        }
+
 
     fun getOtp(): String? = storageWorker.loadOtp()
 
     fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
-    suspend fun listClaimableNftsLinkedTo(emailAddress: String) =
-        claimNFTWorker.getClaimableNfts(emailAddress)
+    fun listClaimableNftsLinkedTo(emailAddress: String) =
+        rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
 
-    suspend fun initiateClaimNFTLinkedTo(
+    fun initiateClaimNFTLinkedTo(
         nftAddress: PublicKey,
         emailAddress: String,
         appWallet: Account,
         newOtp: String? = null
-    ): String? {
+    ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        return claimNFTWorker.claim(nftAddress, emailAddress, appWallet, otp)
+        return rxSingle { claimNFTWorker.claim(nftAddress, emailAddress, appWallet, otp) ?: "" }
     }
 
 }
