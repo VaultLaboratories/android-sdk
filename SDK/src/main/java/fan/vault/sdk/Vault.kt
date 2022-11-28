@@ -2,6 +2,7 @@ package fan.vault.sdk
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.OneTimePasswordRequest
 import fan.vault.sdk.workers.*
@@ -47,21 +48,23 @@ class Vault(val applicationContext: Context) {
     suspend fun initiateClaimNFTLinkedTo(
         nftAddress: PublicKey,
         emailAddress: String,
+        appWallet: Account,
         newOtp: String? = null
     ): String? {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        return claimNFTWorker.claim(nftAddress, emailAddress, otp)
+        return claimNFTWorker.claim(nftAddress, emailAddress, appWallet, otp)
     }
 
     suspend fun initiateClaimAllNFTsLinkedTo(
         emailAddress: String,
-        newOtp: String? = null
+        newOtp: String? = null,
+        appWallet: Account,
     ): List<String?> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
         return listClaimableNftsLinkedTo(emailAddress)
             .filterNotNull()
             .map {
-                claimNFTWorker.claim(it.nft.mint, emailAddress, otp)
+                claimNFTWorker.claim(it.nft.mint, emailAddress, appWallet, otp)
             }
     }
 

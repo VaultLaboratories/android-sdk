@@ -93,7 +93,7 @@ class ClaimNFTWorkerTest {
         runBlocking {
             whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
             val nfts = worker.getClaimableNfts(userEmail)
-            assertEquals("The Chicken Man Cometh #6", nfts.get(0).metadata?.name)
+            assertEquals("The Chicken Man Cometh #6", nfts.get(0)?.metadata?.name)
         }
     }
 

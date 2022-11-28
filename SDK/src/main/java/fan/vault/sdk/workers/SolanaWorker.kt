@@ -31,15 +31,6 @@ class SolanaWorker {
     private val executor = Executors.newFixedThreadPool(10)
     private val client = OkHttpClient()
 
-    suspend fun getNftWithMetadata(nftAddress: PublicKey, walletAddress: String): NftWithMetadata? {
-        val wallet = PublicKey(walletAddress)
-        val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
-        val storageDriver = OkHttpSharedStorageDriver()
-        val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
-
-        return metaplex.nft.findByMint(nftAddress).getOrNull()?.let { fetchArweaveMetadata(it).get() }
-    }
-
     suspend fun listNFTs(walletAddress: String): List<NFT> {
         val wallet = PublicKey(walletAddress)
         val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
