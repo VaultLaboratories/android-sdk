@@ -1,21 +1,11 @@
 package fan.vault.sdk.client
 
 import android.content.Context
-import android.media.MediaPlayer
 import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.OneTimePasswordRequest
-import fan.vault.sdk.workers.*
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.rx3.rxSingle
-
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
 
@@ -29,7 +19,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
             )
         }
 
-    suspend fun listClaimableNftsLinkedTo(emailAddress: String) =
+    fun listClaimableNftsLinkedTo(emailAddress: String) =
         rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
 
     fun initiateClaimNFTLinkedTo(

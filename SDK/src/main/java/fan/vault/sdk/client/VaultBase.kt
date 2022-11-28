@@ -4,16 +4,16 @@ import android.content.Context
 import fan.vault.sdk.workers.*
 
 abstract class VaultBase(private val applicationContext: Context) {
-    val storageWorker by lazy { StorageWorker(applicationContext) }
-    val walletWorker by lazy { WalletWorker(storageWorker) }
-    val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
-    lateinit var claimNFTWorker: ClaimNFTWorker
-    lateinit var proteusAPIWorker: ProteusAPIWorker
+    protected val storageWorker by lazy { StorageWorker(applicationContext) }
+    protected val walletWorker by lazy { WalletWorker(storageWorker) }
+    protected val litProtocolWorker by lazy { LitProtocolWorker(walletWorker) }
+    protected lateinit var claimNFTWorker: ClaimNFTWorker
+    protected lateinit var proteusAPIWorker: ProteusAPIWorker
 
     fun getAppWalletPublicKey(): String = walletWorker.loadWallet().publicKey.toString()
 
-    open fun getOtp(): String? = storageWorker.loadOtp()
+    fun getOtp(): String? = storageWorker.loadOtp()
 
-    open fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
+    fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
 }
