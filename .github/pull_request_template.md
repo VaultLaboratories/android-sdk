@@ -1,6 +1,5 @@
 ## Description
 - A brief description of the task/issue
-- https://linear.app/metaplex/issue/{LINEAR_ISSUE_ID}
 
 ## Work Completed
 - a brief description of all the work completed in this PR
