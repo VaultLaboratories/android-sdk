@@ -9,6 +9,11 @@ import kotlinx.coroutines.rx3.rxSingle
 
 class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
 
+    /**
+     * Request that a new OTP be sent to the given email address.
+     *
+     * @param emailAddress Email address to send OTP to.
+     */
     fun requestGenerateOtp(emailAddress: String) =
         rxSingle {
             proteusAPIWorker.requestOneTimePassword(
@@ -19,17 +24,37 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
             )
         }
 
+    /**
+     * List claimable NFTs from the Social Wallet associated with the given email address.
+     *
+     * @param emailAddress Email address for desired Social Wallet.
+     * @return List of claimable NFTs from Social Wallet and their associated metadata.
+     */
     fun listClaimableNftsLinkedTo(emailAddress: String) =
         rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
 
+    /**
+     * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
+     *
+     * @param nftMint Mint address of NFT being claimed.
+     * @param emailAddress Email address associated with user's Social Wallet.
+     * @param newOtp One time password linking user's email and device app wallet. If omitted, will attempt to use cached OTP from any previous claims.
+     * @return Transaction result
+     */
     fun initiateClaimNFTLinkedTo(
-        nftAddress: PublicKey,
+        nftMint: PublicKey,
         emailAddress: String,
-        appWallet: Account,
         newOtp: String? = null
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        return rxSingle { claimNFTWorker.claim(nftAddress, emailAddress, appWallet, otp) ?: "" }
+        return rxSingle {
+            claimNFTWorker.claim(
+                nftMint,
+                emailAddress,
+                walletWorker.loadWallet(),
+                otp
+            ) ?: ""
+        }
     }
 
 }
