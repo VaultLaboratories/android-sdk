@@ -32,4 +32,9 @@ abstract class VaultBase(private val applicationContext: Context) {
      */
     fun saveOtp(otp: String) = storageWorker.saveOtp(otp)
 
+    /**
+     * Clear cached One Time Password.
+     */
+    fun clearCachedOtp() = storageWorker.clearOtp()
+
 }
