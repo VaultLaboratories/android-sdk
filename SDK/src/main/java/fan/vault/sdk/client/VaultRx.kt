@@ -1,7 +1,6 @@
 package fan.vault.sdk.client
 
 import android.content.Context
-import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.OneTimePasswordRequest
 import io.reactivex.rxjava3.core.Single
@@ -30,7 +29,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      * @param emailAddress Email address for desired Social Wallet.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    fun listClaimableNftsLinkedTo(emailAddress: String) =
+    fun listClaimableNFTsLinkedTo(emailAddress: String) =
         rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
 
     /**
