@@ -37,7 +37,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      *
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
-    suspend fun listClaimedNFTs() =
+    fun listClaimedNFTs() =
         rxSingle { solanaWorker.listNFTsWithMetadata(walletWorker.loadWallet().publicKey.toBase58()) }
 
     /**
