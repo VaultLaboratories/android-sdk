@@ -2,7 +2,7 @@ package fan.vault.sdk.client
 
 import android.content.Context
 import com.solana.core.PublicKey
-import fan.vault.sdk.models.OneTimePasswordRequest
+import fan.vault.sdk.models.*
 
 class Vault(applicationContext: Context) : VaultBase(applicationContext) {
 
@@ -57,5 +57,36 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
             walletWorker.loadWallet(),
             otp
         )
+    }
+
+
+    /**
+     * Get creator profile based on mint address
+     *
+     * @param emailAddress Email address associated with user's Social Wallet.
+     * @param creatorAddress Mint address of NFT backing user's profile
+     */
+    suspend fun getCreatorForMintAddress(userEmail: String, creatorAddress: String): CreatorProfileButThisTimeItIsFromTheBlockChainBecauseThatIsCooler? {
+        val creatorMetadata = creatorWorker.getCreator(userEmail, creatorAddress)?.metadata
+        return creatorMetadata?.let {
+            CreatorProfileButThisTimeItIsFromTheBlockChainBecauseThatIsCooler(
+                it.name,
+                it.description,
+                it.image,
+                it.properties?.files?.firstOrNull { file -> file.name == "banner" }?.uri,
+                getCreatorSocialLinks(it.properties?.links)
+            )
+        }
+    }
+
+    private fun getCreatorSocialLinks(links: List<JsonMetadataLinksExt>?): List<SocialNetwork> {
+        if (links.isNullOrEmpty()) return emptyList()
+
+        return links.map {
+            SocialNetwork(
+                it.network,
+                it.uri
+            )
+        }
     }
 }

@@ -31,7 +31,7 @@ class SolanaWorker {
     private val executor = Executors.newFixedThreadPool(10)
     private val client = OkHttpClient()
 
-    suspend fun listNFTs(walletAddress: String): List<NFT> {
+    private suspend fun listNFTs(walletAddress: String): List<NFT> {
         val wallet = PublicKey(walletAddress)
         val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
         val storageDriver = OkHttpSharedStorageDriver()
@@ -57,6 +57,19 @@ class SolanaWorker {
                     it.metadata?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
                 allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
             }
+    }
+
+    //todo - fix .get() -> "Possibly blocking call in non-blocking context could lead to thread starvation"
+    suspend fun getCreatorByAddress(walletAddress: String, creatorAddress: String): NftWithMetadata? {
+        val solanaIdentityDriver = ReadOnlyIdentityDriver(PublicKey(walletAddress), solana.api)
+        val storageDriver = OkHttpSharedStorageDriver()
+        val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
+
+        return metaplex.nft
+            .findByMint(PublicKey(creatorAddress))
+            .getOrNull()?.let {
+                fetchArweaveMetadata(it)
+            }?.get()
     }
 
     fun fetchArweaveMetadata(
