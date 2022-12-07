@@ -35,8 +35,8 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
                 }
                 .first()
         } else {
-            APIUtils.throwError(txResponse.errorBody()?.string() ?: "")
-            return null
+            val errorMessage = txResponse.errorBody()?.string() ?: ""
+            throw APIUtils.classifyErrorIfKnown(errorMessage) ?: Error(errorMessage)
         }
     }
 
