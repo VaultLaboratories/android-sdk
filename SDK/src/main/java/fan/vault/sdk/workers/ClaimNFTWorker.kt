@@ -3,6 +3,7 @@ package fan.vault.sdk.workers
 import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.NftWithMetadata
+import fan.vault.sdk.utils.APIUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
@@ -34,7 +35,8 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
                 }
                 .first()
         } else {
-            throw Error(txResponse.errorBody()?.string())
+            APIUtils.throwError(txResponse.errorBody()?.string() ?: "")
+            return null
         }
     }
 
