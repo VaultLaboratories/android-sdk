@@ -1,9 +1,9 @@
 package fan.vault.sdk.workers
 
-import android.util.Log
 import com.solana.core.Account
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.NftWithMetadata
+import fan.vault.sdk.utils.APIUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
@@ -14,14 +14,15 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         appWallet: Account,
         withOtp: String
     ): String? {
-        return proteusAPIWorker.getSocialToAppWalletClaimTransaction(
+        val txResponse = proteusAPIWorker.getSocialToAppWalletClaimTransaction(
             userEmailAddress = userEmailAddress,
             appWallet = appWallet.publicKey.toBase58(),
             mint = nft.toBase58(),
             otp = withOtp
-        ).let {
-            flow {
-                emit(solanaWorker.signAndSendTransaction(it.hashTrx, appWallet))
+        )
+        if (txResponse.isSuccessful) {
+            return flow {
+                emit(solanaWorker.signAndSendTransaction(txResponse.body()!!.hashTrx, appWallet))
             }
                 .retry(20) { e ->
                     when (e is Exception) {
@@ -33,6 +34,9 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
                     }
                 }
                 .first()
+        } else {
+            val errorMessage = txResponse.errorBody()?.string() ?: ""
+            throw APIUtils.classifyErrorIfKnown(errorMessage) ?: Error(errorMessage)
         }
     }
 
