@@ -27,7 +27,7 @@ import java.util.concurrent.Future
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class SolanaWorker {
+class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
     private val executor = Executors.newFixedThreadPool(10)
     private val client = OkHttpClient()
 
@@ -57,19 +57,13 @@ class SolanaWorker {
                     it.metadata?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
                 allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
             }
-    }
-
-    //todo - fix .get() -> "Possibly blocking call in non-blocking context could lead to thread starvation"
-    suspend fun getCreatorByAddress(walletAddress: String, creatorAddress: String): NftWithMetadata? {
-        val solanaIdentityDriver = ReadOnlyIdentityDriver(PublicKey(walletAddress), solana.api)
-        val storageDriver = OkHttpSharedStorageDriver()
-        val metaplex = Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
-
-        return metaplex.nft
-            .findByMint(PublicKey(creatorAddress))
-            .getOrNull()?.let {
-                fetchArweaveMetadata(it)
-            }?.get()
+            .mapNotNull {
+                it.apply {
+                    kotlin.runCatching {
+                        creators = proteusAPIWorker.getCreatorProfile(it.nft.mint.toBase58())
+                    }
+                }
+            }
     }
 
     fun fetchArweaveMetadata(

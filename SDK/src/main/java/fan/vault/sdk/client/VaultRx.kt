@@ -2,6 +2,7 @@ package fan.vault.sdk.client
 
 import android.content.Context
 import com.solana.core.PublicKey
+import fan.vault.sdk.models.CreatorNFTProfile
 import fan.vault.sdk.models.OneTimePasswordRequest
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.rx3.rxSingle
@@ -54,6 +55,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
         newOtp: String? = null
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
+        newOtp?.let { saveOtp(it) }
         return rxSingle {
             claimNFTWorker.claim(
                 nftMint,

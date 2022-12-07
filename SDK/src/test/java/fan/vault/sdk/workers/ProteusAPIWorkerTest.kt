@@ -40,6 +40,26 @@ class ProteusAPIWorkerTest {
         }
     }
 
+    @Test
+    fun shouldGetCreatorsForMintAddress() {
+        val mintAddress = "2wWip65h8rB2hYBC9pRAXRZDbTpkX5jHWU8VLKLwV7hy"
+
+        runBlocking {
+            val resp = instance().getCreatorProfile(mintAddress)
+            assertTrue(resp.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun shouldGetCreatorsForCollectionMintAddress() {
+        val collectionMintAddress = "D3pdGfmudraFbf35aJnyz3BvGc4Sn8vuC7yoJNGSdSPD"
+
+        runBlocking {
+            val resp = instance().getCollectionCreatorProfile(collectionMintAddress)
+            assertTrue(resp.isNotEmpty())
+        }
+    }
+
     private fun instance() =
         ProteusAPIWorker.create()
 }

@@ -2,4 +2,8 @@ package fan.vault.sdk.models
 
 import com.metaplex.lib.modules.nfts.models.NFT
 
-data class NftWithMetadata(val nft: NFT, val metadata: JsonMetadataExt?)
+data class NftWithMetadata(
+    val nft: NFT,
+    val metadata: JsonMetadataExt?,
+    var creators: List<CreatorNFTProfile>? = null
+)

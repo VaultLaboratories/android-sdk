@@ -69,5 +69,5 @@ class SolanaWorkerTest {
 
     }
 
-    private fun instance() = SolanaWorker()
+    private fun instance() = SolanaWorker(ProteusAPIWorker.create())
 }

@@ -1,13 +1,13 @@
 package fan.vault.sdk.workers
 
-import fan.vault.sdk.models.NftWithMetadata
+import fan.vault.sdk.models.CreatorNFTProfile
 
-class CreatorWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: SolanaWorker){
+class CreatorWorker(private val proteusAPIWorker: ProteusAPIWorker){
 
-    //todo - feels like creating a worker for this one call is a bit heavy handed, but will there be other creator related functions to come?
+    suspend fun getCreators(mint: String): List<CreatorNFTProfile> =
+        proteusAPIWorker.getCreatorProfile(mint)
 
-    suspend fun getCreator(userEmailAddress: String, creatorAddress: String): NftWithMetadata? =
-        proteusAPIWorker.getSocialWalletAddress(userEmailAddress).let {
-            solanaWorker.getCreatorByAddress(it.wallet, creatorAddress)
-        }
+    suspend fun getCreatorsForCollection(collectionMint: String): List<CreatorNFTProfile> =
+        proteusAPIWorker.getCollectionCreatorProfile(collectionMint)
+
 }

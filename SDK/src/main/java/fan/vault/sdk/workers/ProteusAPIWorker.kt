@@ -30,6 +30,16 @@ interface ProteusAPIWorker {
         @Path("otp") otp: String
     ): Response<TransactionResponse>
 
+    @GET("/mint/{mint}/creator-profile")
+    suspend fun getCreatorProfile(
+        @Path("mint") mint: String
+    ): List<CreatorNFTProfile>
+
+    @GET("/mint/collection-mint/{collectionMint}/creator-profile")
+    suspend fun getCollectionCreatorProfile(
+        @Path("collectionMint") collectionMint: String
+    ): List<CreatorNFTProfile>
+
     companion object {
         private const val BASE_URL = "https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/"
 
