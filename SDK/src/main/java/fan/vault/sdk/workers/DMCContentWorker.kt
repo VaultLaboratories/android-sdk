@@ -3,6 +3,7 @@ package fan.vault.sdk.workers
 import android.util.Log
 import fan.vault.sdk.models.EncryptionProvider
 import fan.vault.sdk.models.JsonMetadataFileExt
+import fan.vault.sdk.models.LitProtocolData
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -17,17 +18,20 @@ class DMCContentWorker(val litProtocolWorker: LitProtocolWorker) {
         }
 
     private suspend fun decryptUsingLitProtocol(file: JsonMetadataFileExt): ByteArray {
-        file.encryption?.providerData?.let {
-            val symmKey = litProtocolWorker.getSymmetricKey(
-                litProtocolWorker.genAuthSig(),
-                it.accessControlConditions,
-                it.encryptedSymmetricKey
-            )
-            return litProtocolWorker.decryptWithSymmetricKey(
-                getEncryptedBytes(file),
-                symmKey.symmetricKey
-            )
-        } ?: throw Exception("No encryption provider data found")
+        file.encryption?.providerData
+            ?.takeIf { it is LitProtocolData }
+            ?.let { it as LitProtocolData }
+            ?.let {
+                val symmKey = litProtocolWorker.getSymmetricKey(
+                    litProtocolWorker.genAuthSig(),
+                    it.accessControlConditions,
+                    it.encryptedSymmetricKey
+                )
+                return litProtocolWorker.decryptWithSymmetricKey(
+                    getEncryptedBytes(file),
+                    symmKey.symmetricKey
+                )
+            } ?: throw Exception("No encryption provider data found")
     }
 
     private fun getEncryptedBytes(file: JsonMetadataFileExt) =

@@ -2,6 +2,7 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import android.util.Log
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.metaplex.lib.Metaplex
@@ -16,9 +17,7 @@ import com.solana.core.PublicKey
 import com.solana.core.Transaction
 import com.solana.networking.OkHttpNetworkingRouter
 import com.solana.networking.RPCEndpoint
-import fan.vault.sdk.models.DMCTypes
-import fan.vault.sdk.models.JsonMetadataExt
-import fan.vault.sdk.models.NftWithMetadata
+import fan.vault.sdk.models.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -57,6 +56,50 @@ class SolanaWorker {
             .filter { nft ->
                 allowedDMCTypes?.let { allowedDMCTypes.contains(nft.metadata?.type) } ?: true
             }
+            .also {
+                it.map { it.metadata?.files = mapFileExt(it) }
+            }
+    }
+
+    private fun mapFileExt(nft: NftWithMetadata): List<Any> {
+        var newFileList: List<Any> = emptyList()
+        nft.metadata?.files?.map { anyFile ->
+            val mime = (anyFile as java.util.LinkedHashMap<*, *>)["mime"].toString()
+            newFileList = if (mime.contains("audio")) {
+                newFileList.plus(
+                    jacksonObjectMapper().convertValue(
+                        anyFile,
+                        JsonMetadataAudioFileExt::class.java
+                    ).apply {
+                        this.encryption?.let { this.encryption = mapEncryptionData(it) }
+                    }
+                )
+            } else {
+                newFileList.plus(
+                    jacksonObjectMapper().convertValue(
+                        anyFile,
+                        JsonMetadataFileExt::class.java
+                    ).apply {
+                        this.encryption?.let { this.encryption = mapEncryptionData(it) }
+                    }
+                )
+            }
+        }
+        return newFileList
+    }
+
+    private fun mapEncryptionData(encryption: Encryption): Encryption {
+        return if (encryption.provider == EncryptionProvider.LIT_PROTOCOL) {
+            Encryption(
+                EncryptionProvider.LIT_PROTOCOL,
+                jacksonObjectMapper().convertValue(
+                    encryption.providerData,
+                    LitProtocolData::class.java
+                )
+            )
+        } else {
+            encryption
+        }
     }
 
     fun fetchArweaveMetadata(

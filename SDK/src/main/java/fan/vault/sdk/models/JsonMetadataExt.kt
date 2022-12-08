@@ -8,12 +8,12 @@ data class JsonMetadataExt(
     val name: String,
     val description: String?,
     val symbol: String,
-    val attributes: List<Trait>? = null,
+    val attributes: List<Trait>?,
     val type: DMCTypes,
     val image: String,
-    var files: List<JsonMetadataFileExt>,
+    var files: List<Any>,
     val items: List<JsonMetadataItemExt>,
-    val links: List<Link>? = null
+    val links: List<Link>?
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,15 +32,26 @@ data class JsonMetadataFileExt (
     val uri: String,
     val mime: String,
     val id: String,
-    val encryption: Encryption?,
-    var metatdata: Any?,
+    var encryption: Encryption?,
+    var metadata: Any?,
     val streamableUri: String?,
-    val kbps: Number?
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class JsonMetadataAudioFileExt (
+    val uri: String,
+    val mime: String,
+    val id: String,
+    var encryption: Encryption?,
+    var metadata: MusicMetadata?,
+    val streamableUri: String?,
+    val kbps: Number? // this is supposed to be mandatory but is not currently included in examples
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusicMetadata(
     val artists: List<String>,
-    val displayArtistName: String,
+    val displayArtistName: String?,
     val trackName: String,
     val trackNumber: Number?,
     val genre: List<String>?,
@@ -48,7 +59,7 @@ data class MusicMetadata(
     val bpm: Number?,
     val tempo: Number?,
     val duration: String?,
-    val isrc: String?,
+    @JsonProperty("ISRC") val isrc: String?,
     val iswc: String?,
     val isni: String?,
     val iwi: String?,
@@ -61,10 +72,9 @@ data class MusicMetadata(
     val explicit: Boolean?
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class Encryption(
     val provider: EncryptionProvider,
-    val providerData: LitProtocolData,
+    var providerData: Any,
 )
 
 data class LitProtocolData(

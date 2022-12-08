@@ -10,7 +10,7 @@ data class EncryptionKeyRequest(
     val encryptedSymmetricKey: String
 )
 
-@JsonSerialize
+//@JsonSerialize
 data class AccessControlConditions(
     val method: String,
     val params: List<String>,
@@ -21,8 +21,8 @@ data class AccessControlConditions(
     val returnValueTest: ReturnValueTest
 )
 
-@JsonSerialize
+//@JsonSerialize
 data class ReturnValueTest(val key: String, val comparator: String, val value: String)
 
-@JsonSerialize
+//@JsonSerialize
 data class PdaInterface(val offset: Number, val fields: Map<String, Number>)

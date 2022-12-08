@@ -1,8 +1,9 @@
 package fan.vault.sdk.workers
 
 import android.util.Base64
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import fan.vault.sdk.models.*
 
-import fan.vault.sdk.models.TransactionResponse
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.slot
@@ -67,6 +68,28 @@ class SolanaWorkerTest {
             }
         }
 
+    }
+
+    @Test
+    fun shouldCheckDMCData() {
+        val worker = instance()
+
+        runBlocking {
+            val nfts = worker
+                .listNFTsWithMetadata("58Ss4MQ6CuhPcA49fQmLphPMVzKy6MLueUTPqrdJ3mnj")
+
+            nfts.map {
+                assertEquals(DMCTypes.ALBUM, it.metadata?.type)
+                it.metadata?.files?.filterIsInstance<JsonMetadataAudioFileExt>()
+                    ?.map { file ->
+                        assertTrue(file.metadata is MusicMetadata)
+                        if (file.encryption?.provider == EncryptionProvider.LIT_PROTOCOL) {
+                            assertTrue(file.encryption?.providerData is LitProtocolData)
+                        }
+                    }
+                    ?: fail()
+            }
+        }
     }
 
     private fun instance() = SolanaWorker()
