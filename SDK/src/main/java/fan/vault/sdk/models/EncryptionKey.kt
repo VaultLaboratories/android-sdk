@@ -26,5 +26,3 @@ data class ReturnValueTest(val key: String, val comparator: String, val value: S
 
 @JsonSerialize
 data class PdaInterface(val offset: Number, val fields: Map<String, Number>)
-
-class EmptyObject

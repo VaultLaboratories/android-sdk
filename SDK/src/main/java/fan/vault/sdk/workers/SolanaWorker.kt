@@ -16,8 +16,8 @@ import com.solana.core.PublicKey
 import com.solana.core.Transaction
 import com.solana.networking.OkHttpNetworkingRouter
 import com.solana.networking.RPCEndpoint
+import fan.vault.sdk.models.DMCTypes
 import fan.vault.sdk.models.JsonMetadataExt
-import fan.vault.sdk.models.NftTypes
 import fan.vault.sdk.models.NftWithMetadata
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -45,17 +45,17 @@ class SolanaWorker {
 
     suspend fun listNFTsWithMetadata(
         walletAddress: String,
-        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE)
+        allowedDMCTypes: List<DMCTypes>? = null
     ): List<NftWithMetadata> {
+
+        println(listNFTs(walletAddress).toString())
         val candidates = listNFTs(walletAddress)
             .map { fetchArweaveMetadata(it) }
 
         return candidates
             .mapNotNull { it.get() }
-            .filter {
-                val type =
-                    it.metadata?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
-                allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
+            .filter { nft ->
+                allowedDMCTypes?.let { allowedDMCTypes.contains(nft.metadata?.type) } ?: true
             }
     }
 

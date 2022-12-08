@@ -54,7 +54,7 @@ class LitProtocolWorker(val walletWorker: WalletWorker) {
         val byteString = symmKey.decodeHex().toByteArray()
         val secretKeySpec = SecretKeySpec(byteString, "AES")
         val cipher: Cipher =
-            Cipher.getInstance("AES/CBC/PKCS5PADDING") //Possibly want "AES/CBC/NoPadding"
+            Cipher.getInstance("AES/CBC/PKCS5PADDING")
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, IvParameterSpec(recoveredIv))
         return cipher.doFinal(encryptedZipArrayBuffer)
     }
