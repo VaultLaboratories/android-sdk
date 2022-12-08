@@ -46,8 +46,6 @@ class SolanaWorker {
         walletAddress: String,
         allowedDMCTypes: List<DMCTypes>? = null
     ): List<NftWithMetadata> {
-
-        println(listNFTs(walletAddress).toString())
         val candidates = listNFTs(walletAddress)
             .map { fetchArweaveMetadata(it) }
 

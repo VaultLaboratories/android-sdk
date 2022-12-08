@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class DMCContentWorker(val litProtocolWorker: LitProtocolWorker) {
-    private val client = OkHttpClient()
+    private val client by lazy { OkHttpClient() }
 
     suspend fun decryptFile(file: JsonMetadataFileExt) =
         when (file.encryption?.provider) {
@@ -45,14 +45,13 @@ class DMCContentWorker(val litProtocolWorker: LitProtocolWorker) {
                             .newCall(request)
                             .execute()
                             .body?.bytes()
+                    }.onFailure {
+                        Log.i(
+                            "Proteus",
+                            "Unable to fetch from Arweave right now: ${it.localizedMessage}"
+                        )
                     }
-                }.onFailure {
-                    Log.i(
-                        "Proteus",
-                        "Unable to fetch from Arweave right now: ${it.localizedMessage}"
-                    )
-                }
-                .getOrThrow()
+                }.getOrThrow()
         } ?: throw Exception("Incorrect URI format for DMC content")
 
 }
