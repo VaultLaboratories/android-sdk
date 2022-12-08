@@ -43,7 +43,7 @@ class SolanaWorkerTest {
 
         runBlocking {
             val nfts = worker
-                .listNFTsWithMetadata("EWueYv3bjYMDUGfq432rGzMQ3wAgb1MaYW7ZsSKpWHTZ") // changed this wallet to contain up-to-date NFTs
+                .listNFTsWithMetadata("EWueYv3bjYMDUGfq432rGzMQ3wAgb1MaYW7ZsSKpWHTZ", includeCreatorData = true) // changed this wallet to contain up-to-date NFTs
 
             assertTrue(nfts.size >= 3)
         }
@@ -92,5 +92,5 @@ class SolanaWorkerTest {
         }
     }
 
-    private fun instance() = SolanaWorker()
+    private fun instance() = SolanaWorker(ProteusAPIWorker.create())
 }

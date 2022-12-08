@@ -5,10 +5,11 @@ import fan.vault.sdk.workers.*
 
 abstract class VaultBase(private val applicationContext: Context) {
     private val storageWorker by lazy { StorageWorker(applicationContext) }
-    protected val solanaWorker by lazy { SolanaWorker() }
-    protected val walletWorker by lazy { WalletWorker(storageWorker) }
     protected val proteusAPIWorker by lazy { ProteusAPIWorker.create() }
+    protected val solanaWorker by lazy { SolanaWorker(proteusAPIWorker) }
+    protected val walletWorker by lazy { WalletWorker(storageWorker) }
     protected val claimNFTWorker by lazy { ClaimNFTWorker(proteusAPIWorker, solanaWorker) }
+    protected val creatorWorker by lazy { CreatorWorker(proteusAPIWorker) }
     protected val litProtocolWorker by lazy {LitProtocolWorker(walletWorker)}
     protected val dmcContentWorker by lazy {DMCContentWorker(litProtocolWorker)}
 

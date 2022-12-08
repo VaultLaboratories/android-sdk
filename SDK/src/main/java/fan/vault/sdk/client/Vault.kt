@@ -4,6 +4,7 @@ import android.content.Context
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.JsonMetadataFileExt
 import fan.vault.sdk.models.OneTimePasswordRequest
+import fan.vault.sdk.models.*
 
 class Vault(applicationContext: Context) : VaultBase(applicationContext) {
 
@@ -24,18 +25,28 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
      * List claimable NFTs from the Social Wallet associated with the given email address.
      *
      * @param emailAddress Email address for desired Social Wallet.
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    suspend fun listClaimableNFTsLinkedTo(emailAddress: String) =
-        claimNFTWorker.getClaimableNfts(emailAddress)
+    suspend fun listClaimableNFTsLinkedTo(
+        emailAddress: String,
+        includeCreatorData: Boolean = true
+    ) =
+        claimNFTWorker.getClaimableNfts(emailAddress, includeCreatorData)
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.
      *
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
-    suspend fun listClaimedNFTs() =
-        solanaWorker.listNFTsWithMetadata(walletWorker.loadWallet().publicKey.toBase58())
+    suspend fun listClaimedNFTs(
+        includeCreatorData: Boolean = true
+    ) =
+        solanaWorker.listNFTsWithMetadata(
+            walletWorker.loadWallet().publicKey.toBase58(),
+            includeCreatorData
+        )
 
     /**
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.

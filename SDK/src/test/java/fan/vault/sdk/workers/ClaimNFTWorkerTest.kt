@@ -97,5 +97,5 @@ class ClaimNFTWorkerTest {
     }
 
     private fun instance() =
-        ClaimNFTWorker(Mockito.mock(ProteusAPIWorker::class.java), SolanaWorker())
+        ClaimNFTWorker(Mockito.mock(ProteusAPIWorker::class.java), SolanaWorker(ProteusAPIWorker.create()))
 }
