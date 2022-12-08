@@ -9,6 +9,7 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -80,17 +81,18 @@ class ClaimNFTWorkerTest {
 
     @Test
     fun shouldRetrieveClaimableNfts() {
-        val userEmail = "antClaimTest@vault.fan"
+        val userEmail = "antClaimableTest@vault.fan"
         val wallet = SocialWalletResponse(
-            "FkSCg1x6n1cHPgEWMCM9kgXYJAzthM7z6opvzMMVzT4V",
-            "lwi5urADjo1i+5M0i2SjjBVphXjxqsOyX5FEwe0Wwb0="
+            "EWueYv3bjYMDUGfq432rGzMQ3wAgb1MaYW7ZsSKpWHTZ",
+            "0Zf/9zJPIniSKGMoA4d5usAIbu4FjQ8vZDwFcDqxAv0="
         )
         val worker = instance()
 
         runBlocking {
             whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
-            val nfts = worker.getClaimableNfts(userEmail)
-            assertEquals("The Chicken Man Cometh #6", nfts.get(0)?.metadata?.name)
+            val nfts = worker.getClaimableNfts(userEmail, includeCreatorData = false)
+            val mintList = nfts.map { it?.nft?.mint?.toBase58() }
+            assertTrue(mintList.contains("Dc6gWoQKK8WV1P91yJhvuuVuwpFd5y8y7hRhHovsso2Z"))
         }
     }
 

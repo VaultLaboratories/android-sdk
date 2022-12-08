@@ -3,6 +3,7 @@ package fan.vault.sdk.client
 import android.content.Context
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.CreatorNFTProfile
+import fan.vault.sdk.models.JsonMetadataFileExt
 import fan.vault.sdk.models.OneTimePasswordRequest
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.rx3.rxSingle
@@ -48,7 +49,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     ) = rxSingle {
         solanaWorker.listNFTsWithMetadata(
             walletWorker.loadWallet().publicKey.toBase58(),
-            includeCreatorData
+            includeCreatorData = includeCreatorData
         )
     }
 
@@ -76,5 +77,13 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
             ) ?: ""
         }
     }
+
+    /**
+     * Initiate a file decryption.
+     *
+     * @param file File to decrypt.
+     * @return ByteArray
+     */
+    fun decryptFile(file: JsonMetadataFileExt): Single<ByteArray> = rxSingle { dmcContentWorker.decryptFile(file) }
 
 }
