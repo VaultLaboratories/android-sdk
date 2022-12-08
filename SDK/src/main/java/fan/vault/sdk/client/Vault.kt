@@ -61,13 +61,14 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
         newOtp: String? = null
     ): String? {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        newOtp?.let { saveOtp(it) }
         return claimNFTWorker.claim(
             nftMint,
             emailAddress,
             walletWorker.loadWallet(),
             otp
-        )
+        )?.also {
+            saveOtp(otp)
+        }
     }
 
     /**
