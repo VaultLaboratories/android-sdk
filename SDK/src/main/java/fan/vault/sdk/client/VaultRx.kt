@@ -49,7 +49,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     ) = rxSingle {
         solanaWorker.listNFTsWithMetadata(
             walletWorker.loadWallet().publicKey.toBase58(),
-            includeCreatorData
+            includeCreatorData = includeCreatorData
         )
     }
 

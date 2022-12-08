@@ -4,7 +4,6 @@ import android.content.Context
 import com.solana.core.PublicKey
 import fan.vault.sdk.models.JsonMetadataFileExt
 import fan.vault.sdk.models.OneTimePasswordRequest
-import fan.vault.sdk.models.*
 
 class Vault(applicationContext: Context) : VaultBase(applicationContext) {
 
@@ -45,7 +44,7 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
     ) =
         solanaWorker.listNFTsWithMetadata(
             walletWorker.loadWallet().publicKey.toBase58(),
-            includeCreatorData
+            includeCreatorData = includeCreatorData
         )
 
     /**
@@ -77,5 +76,5 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
      * @param file File to decrypt.
      * @return ByteArray
      */
-    suspend fun decryptFile(file: JsonMetadataFileExt): ByteArray? = dmcContentWorker.decryptFile(file)
+    suspend fun decryptFile(file: JsonMetadataFileExt): ByteArray = dmcContentWorker.decryptFile(file)
 }

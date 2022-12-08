@@ -90,7 +90,7 @@ class ClaimNFTWorkerTest {
 
         runBlocking {
             whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
-            val nfts = worker.getClaimableNfts(userEmail)
+            val nfts = worker.getClaimableNfts(userEmail, includeCreatorData = false)
             val mintList = nfts.map { it?.nft?.mint?.toBase58() }
             assertTrue(mintList.contains("Dc6gWoQKK8WV1P91yJhvuuVuwpFd5y8y7hRhHovsso2Z"))
         }

@@ -76,7 +76,7 @@ class SolanaWorkerTest {
 
         runBlocking {
             val nfts = worker
-                .listNFTsWithMetadata("58Ss4MQ6CuhPcA49fQmLphPMVzKy6MLueUTPqrdJ3mnj")
+                .listNFTsWithMetadata("58Ss4MQ6CuhPcA49fQmLphPMVzKy6MLueUTPqrdJ3mnj", includeCreatorData = false)
 
             nfts.map {
                 assertEquals(DMCTypes.ALBUM, it.metadata?.type)
