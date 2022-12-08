@@ -2,6 +2,7 @@ package fan.vault.sdk.client
 
 import android.content.Context
 import com.solana.core.PublicKey
+import fan.vault.sdk.models.CreatorNFTProfile
 import fan.vault.sdk.models.OneTimePasswordRequest
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.rx3.rxSingle
@@ -13,32 +14,43 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      *
      * @param emailAddress Email address to send OTP to.
      */
-    fun requestGenerateOtp(emailAddress: String) =
-        rxSingle {
-            proteusAPIWorker.requestOneTimePassword(
-                OneTimePasswordRequest(
-                    emailAddress,
-                    walletWorker.loadWallet().publicKey.toBase58()
-                )
+    fun requestGenerateOtp(emailAddress: String) = rxSingle {
+        proteusAPIWorker.requestOneTimePassword(
+            OneTimePasswordRequest(
+                emailAddress,
+                walletWorker.loadWallet().publicKey.toBase58()
             )
-        }
+        )
+    }
 
     /**
      * List claimable NFTs from the Social Wallet associated with the given email address.
      *
      * @param emailAddress Email address for desired Social Wallet.
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    fun listClaimableNFTsLinkedTo(emailAddress: String) =
-        rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
+    fun listClaimableNFTsLinkedTo(
+        emailAddress: String,
+        includeCreatorData: Boolean = true
+    ) = rxSingle {
+        claimNFTWorker.getClaimableNfts(emailAddress, includeCreatorData)
+    }
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.
      *
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
-    fun listClaimedNFTs() =
-        rxSingle { solanaWorker.listNFTsWithMetadata(walletWorker.loadWallet().publicKey.toBase58()) }
+    fun listClaimedNFTs(
+        includeCreatorData: Boolean = true
+    ) = rxSingle {
+        solanaWorker.listNFTsWithMetadata(
+            walletWorker.loadWallet().publicKey.toBase58(),
+            includeCreatorData
+        )
+    }
 
     /**
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
@@ -54,6 +66,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
         newOtp: String? = null
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
+        newOtp?.let { saveOtp(it) }
         return rxSingle {
             claimNFTWorker.claim(
                 nftMint,

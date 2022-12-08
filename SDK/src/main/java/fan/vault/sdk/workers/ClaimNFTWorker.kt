@@ -35,13 +35,12 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
                 }
                 .first()
         } else {
-            val errorMessage = txResponse.errorBody()?.string() ?: ""
-            throw APIUtils.classifyErrorIfKnown(errorMessage) ?: Error(errorMessage)
+            throw APIUtils.classifyErrorIfKnown(txResponse.errorBody()?.string())
         }
     }
 
-    suspend fun getClaimableNfts(userEmailAddress: String): List<NftWithMetadata?> =
+    suspend fun getClaimableNfts(userEmailAddress: String, includeCreatorData: Boolean): List<NftWithMetadata?> =
         proteusAPIWorker.getSocialWalletAddress(userEmailAddress).let {
-            solanaWorker.listNFTsWithMetadata(it.wallet)
+            solanaWorker.listNFTsWithMetadata(it.wallet, includeCreatorData)
         }
 }

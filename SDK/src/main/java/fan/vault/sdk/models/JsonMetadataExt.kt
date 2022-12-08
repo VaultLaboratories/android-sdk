@@ -22,7 +22,8 @@ data class JsonMetadataExt(
 data class JsonMetadataPropertiesExt(
     val creators: List<JsonMetadataCreator>?,
     val files: List<JsonMetadataFileExt>?,
-    val benefits: List<String>?
+    val benefits: List<String>?,
+    val links: List<JsonMetadataLinksExt>?
 )
 
 @JsonClass(generateAdapter = false)
@@ -41,4 +42,11 @@ data class JsonMetadataFileExt(
     val name: String?,
     val encryptedSymmetricKey: String?,
     val accessControlConditions: List<AccessControlConditions>?
+)
+
+@JsonClass(generateAdapter = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class JsonMetadataLinksExt(
+    val network: String,
+    val uri: String
 )

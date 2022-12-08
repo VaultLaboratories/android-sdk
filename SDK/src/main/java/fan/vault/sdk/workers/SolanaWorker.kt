@@ -27,11 +27,11 @@ import java.util.concurrent.Future
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class SolanaWorker {
+class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
     private val executor = Executors.newFixedThreadPool(10)
     private val client = OkHttpClient()
 
-    suspend fun listNFTs(walletAddress: String): List<NFT> {
+    private suspend fun listNFTs(walletAddress: String): List<NFT> {
         val wallet = PublicKey(walletAddress)
         val solanaIdentityDriver = ReadOnlyIdentityDriver(wallet, solana.api)
         val storageDriver = OkHttpSharedStorageDriver()
@@ -45,6 +45,7 @@ class SolanaWorker {
 
     suspend fun listNFTsWithMetadata(
         walletAddress: String,
+        includeCreatorData: Boolean,
         allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE)
     ): List<NftWithMetadata> {
         val candidates = listNFTs(walletAddress)
@@ -56,6 +57,16 @@ class SolanaWorker {
                 val type =
                     it.metadata?.attributes?.firstOrNull() { it.trait_type.equals("type") }?.value
                 allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
+            }
+            .mapNotNull {
+                when (includeCreatorData) {
+                    false -> it
+                    true -> it.apply {
+                        kotlin.runCatching {
+                            creators = proteusAPIWorker.getCreatorProfile(it.nft.mint.toBase58())
+                        }
+                    }
+                }
             }
     }
 
