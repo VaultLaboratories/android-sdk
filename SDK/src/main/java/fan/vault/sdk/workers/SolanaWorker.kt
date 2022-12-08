@@ -45,7 +45,8 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
 
     suspend fun listNFTsWithMetadata(
         walletAddress: String,
-        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE)
+        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE),
+        includeCreatorData: Boolean = false
     ): List<NftWithMetadata> {
         val candidates = listNFTs(walletAddress)
             .map { fetchArweaveMetadata(it) }
@@ -58,9 +59,12 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
                 allowedNftTypes.contains(NftTypes.fromText(type?.toString()))
             }
             .mapNotNull {
-                it.apply {
-                    kotlin.runCatching {
-                        creators = proteusAPIWorker.getCreatorProfile(it.nft.mint.toBase58())
+                when (includeCreatorData) {
+                    false -> it
+                    true -> it.apply {
+                        kotlin.runCatching {
+                            creators = proteusAPIWorker.getCreatorProfile(it.nft.mint.toBase58())
+                        }
                     }
                 }
             }

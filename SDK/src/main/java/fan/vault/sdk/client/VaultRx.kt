@@ -14,15 +14,14 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      *
      * @param emailAddress Email address to send OTP to.
      */
-    fun requestGenerateOtp(emailAddress: String) =
-        rxSingle {
-            proteusAPIWorker.requestOneTimePassword(
-                OneTimePasswordRequest(
-                    emailAddress,
-                    walletWorker.loadWallet().publicKey.toBase58()
-                )
+    fun requestGenerateOtp(emailAddress: String) = rxSingle {
+        proteusAPIWorker.requestOneTimePassword(
+            OneTimePasswordRequest(
+                emailAddress,
+                walletWorker.loadWallet().publicKey.toBase58()
             )
-        }
+        )
+    }
 
     /**
      * List claimable NFTs from the Social Wallet associated with the given email address.
@@ -30,16 +29,21 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      * @param emailAddress Email address for desired Social Wallet.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    fun listClaimableNFTsLinkedTo(emailAddress: String) =
-        rxSingle { claimNFTWorker.getClaimableNfts(emailAddress) }
+    fun listClaimableNFTsLinkedTo(emailAddress: String) = rxSingle {
+        claimNFTWorker.getClaimableNfts(emailAddress)
+    }
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.
      *
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
-    fun listClaimedNFTs() =
-        rxSingle { solanaWorker.listNFTsWithMetadata(walletWorker.loadWallet().publicKey.toBase58()) }
+    fun listClaimedNFTs() = rxSingle {
+        solanaWorker.listNFTsWithMetadata(
+            walletWorker.loadWallet().publicKey.toBase58(),
+            includeCreatorData = true
+        )
+    }
 
     /**
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.

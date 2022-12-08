@@ -34,7 +34,10 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
     suspend fun listClaimedNFTs() =
-        solanaWorker.listNFTsWithMetadata(walletWorker.loadWallet().publicKey.toBase58())
+        solanaWorker.listNFTsWithMetadata(
+            walletWorker.loadWallet().publicKey.toBase58(),
+            includeCreatorData = true
+        )
 
     /**
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
