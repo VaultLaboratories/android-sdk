@@ -27,21 +27,28 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      * List claimable NFTs from the Social Wallet associated with the given email address.
      *
      * @param emailAddress Email address for desired Social Wallet.
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    fun listClaimableNFTsLinkedTo(emailAddress: String) = rxSingle {
-        claimNFTWorker.getClaimableNfts(emailAddress)
+    fun listClaimableNFTsLinkedTo(
+        emailAddress: String,
+        includeCreatorData: Boolean = true
+    ) = rxSingle {
+        claimNFTWorker.getClaimableNfts(emailAddress, includeCreatorData)
     }
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.
      *
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimed NFTs and associated metadata from the user's App Wallet
      */
-    fun listClaimedNFTs() = rxSingle {
+    fun listClaimedNFTs(
+        includeCreatorData: Boolean = true
+    ) = rxSingle {
         solanaWorker.listNFTsWithMetadata(
             walletWorker.loadWallet().publicKey.toBase58(),
-            includeCreatorData = true
+            includeCreatorData
         )
     }
 

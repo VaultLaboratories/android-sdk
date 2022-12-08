@@ -45,8 +45,8 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
 
     suspend fun listNFTsWithMetadata(
         walletAddress: String,
-        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE),
-        includeCreatorData: Boolean = false
+        includeCreatorData: Boolean,
+        allowedNftTypes: List<NftTypes> = listOf(NftTypes.ALBUM, NftTypes.SINGLE)
     ): List<NftWithMetadata> {
         val candidates = listNFTs(walletAddress)
             .map { fetchArweaveMetadata(it) }
