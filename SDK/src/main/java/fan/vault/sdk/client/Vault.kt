@@ -2,6 +2,7 @@ package fan.vault.sdk.client
 
 import android.content.Context
 import com.solana.core.PublicKey
+import fan.vault.sdk.models.JsonMetadataFileExt
 import fan.vault.sdk.models.OneTimePasswordRequest
 
 class Vault(applicationContext: Context) : VaultBase(applicationContext) {
@@ -58,4 +59,12 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
             otp
         )
     }
+
+    /**
+     * Initiate a file decryption.
+     *
+     * @param file File to decrypt.
+     * @return ByteArray
+     */
+    suspend fun decryptFile(file: JsonMetadataFileExt): ByteArray? = dmcContentWorker.decryptFile(file)
 }
