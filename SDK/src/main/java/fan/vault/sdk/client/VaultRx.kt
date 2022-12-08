@@ -67,14 +67,15 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
         newOtp: String? = null
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        newOtp?.let { saveOtp(it) }
         return rxSingle {
             claimNFTWorker.claim(
                 nftMint,
                 emailAddress,
                 walletWorker.loadWallet(),
                 otp
-            ) ?: ""
+            )?.also {
+                saveOtp(otp)
+            } ?: ""
         }
     }
 
