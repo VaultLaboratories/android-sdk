@@ -1,8 +1,11 @@
 package fan.vault.sdk.models
 
+import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.parcelize.Parcelize
 
-enum class EncryptionProvider {
+@Parcelize
+enum class EncryptionProvider: Parcelable {
     @JsonProperty("lit-protocol")
     LIT_PROTOCOL;
 }

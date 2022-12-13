@@ -1,8 +1,11 @@
 package fan.vault.sdk.models
 
+import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.parcelize.Parcelize
 
-enum class ItemTypes {
+@Parcelize
+enum class ItemTypes: Parcelable {
     @JsonProperty("single-audio")
     SINGLE_AUDIO,
 
