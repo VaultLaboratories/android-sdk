@@ -12,6 +12,7 @@ abstract class VaultBase(private val applicationContext: Context) {
     protected val creatorWorker by lazy { CreatorWorker(proteusAPIWorker) }
     protected val litProtocolWorker by lazy {LitProtocolWorker(walletWorker)}
     protected val dmcContentWorker by lazy {DMCContentWorker(litProtocolWorker)}
+    protected val storeWorker by lazy {StoreWorker(proteusAPIWorker)}
 
     /**
      * Get public key of user's App Wallet.
