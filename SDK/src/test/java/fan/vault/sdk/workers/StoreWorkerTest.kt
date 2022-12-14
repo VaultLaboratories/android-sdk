@@ -48,10 +48,10 @@ class StoreWorkerTest {
         const val collectionMint = "collectionMintId"
     }
 
-    private fun createJsonDropVariant() = JsonDropVariant("candyMachine", "999", collectionMint,
+    private fun createJsonDropVariant() = JsonDropVariant("candyMachine", 999, collectionMint,
         JsonMetadataExt("name", "description", "symbol", listOf(), DMCTypes.SINGLE, "image", emptyList(), emptyList(), emptyList()))
 
     private fun createJsonFeaturedDrop(variant: JsonDropVariant) = JsonFeaturedDrop("id",
-        JsonFeaturedDropData(listOf(), "1670947003"),
+        JsonFeaturedDropData(listOf(), 1670947003),
         listOf( variant))
 }

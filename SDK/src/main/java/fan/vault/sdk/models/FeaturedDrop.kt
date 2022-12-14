@@ -28,7 +28,7 @@ data class FeaturedDrop(
                 name = variant.collectionMetadata.name,
                 image = variant.collectionMetadata.image,
                 startDate = Date(startDateSeconds * 1000),
-                price = variant.priceUsdCents.toInt(), //TODO: priceUsdCents should be being changed to an Int
+                price = variant.priceUsdCents,
                 creators = creators,
                 type = variant.collectionMetadata.attributes?.firstOrNull { it.traitType == "type" }?.value?.let {
                     DMCTypes.valueOf(it)

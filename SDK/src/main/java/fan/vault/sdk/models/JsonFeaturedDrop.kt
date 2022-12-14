@@ -12,13 +12,13 @@ data class JsonFeaturedDrop(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonFeaturedDropData(
     val creators: List<JsonCreator>,
-    val startDate: String,//Change to Int after launcher changes
+    val startDate: Long,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonDropVariant (
     val candyMachine: String,
-    val priceUsdCents: String,//Change to Int after launcher changes
+    val priceUsdCents: Int,
     val collectionMint: String,
     var collectionMetadata: JsonMetadataExt
 )

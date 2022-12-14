@@ -13,7 +13,7 @@ class StoreWorker(val proteusAPIWorker: ProteusAPIWorker) {
                 drop.variants.map { VariantCreatorProfilesPair(drop, it, proteusAPIWorker.getCollectionCreatorProfile(it.collectionMint)) }
             }.fold(mutableListOf()) { output, listOfVariantData ->
                 listOfVariantData.forEach {
-                    output.add(FeaturedDrop.create(it.drop.data.startDate.toLong(), it.drop.id, it.variant, it.creatorNFTProfiles))
+                    output.add(FeaturedDrop.create(it.drop.data.startDate, it.drop.id, it.variant, it.creatorNFTProfiles))
                 }
                 output
             }
