@@ -1,16 +1,18 @@
 package fan.vault.sdk.models
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 data class EncryptionKeyResponse(val symmetricKey: String)
 
+@Parcelize
 data class EncryptionKeyRequest(
     val authSig: AuthSig,
     val accessConditions: List<AccessControlConditions>,
     val encryptedSymmetricKey: String
-)
+): Parcelable
 
-//@JsonSerialize
+@Parcelize
 data class AccessControlConditions(
     val method: String,
     val params: List<String>,
@@ -19,10 +21,17 @@ data class AccessControlConditions(
     val pdaKey: String,
     val chain: String,
     val returnValueTest: ReturnValueTest
-)
+): Parcelable
 
-//@JsonSerialize
-data class ReturnValueTest(val key: String, val comparator: String, val value: String)
+@Parcelize
+data class ReturnValueTest(
+    val key: String,
+    val comparator: String,
+    val value: String
+): Parcelable
 
-//@JsonSerialize
-data class PdaInterface(val offset: Number, val fields: Map<String, Number>)
+@Parcelize
+data class PdaInterface(
+    val offset: Number,
+    val fields: Map<String, Number>
+): Parcelable
