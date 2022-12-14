@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -71,7 +72,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'fan.vault.sdk'
                 artifactId = 'sdk'
-                version = '1.0.15'
+                version = '1.0.16'
             }
         }
         repositories {

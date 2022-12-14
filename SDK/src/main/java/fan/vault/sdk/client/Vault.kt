@@ -48,6 +48,13 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
         )
 
     /**
+     * List featured drops
+     *
+     * @return List of featured drops including associated creator data
+     */
+    suspend fun listFeaturedDrops() = storeWorker.getFeaturedDrops()
+
+    /**
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
      *
      * @param nftMint Mint address of NFT being claimed.
