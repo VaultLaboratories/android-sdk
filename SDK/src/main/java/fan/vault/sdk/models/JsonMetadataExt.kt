@@ -83,7 +83,7 @@ data class MusicMetadata(
 @Parcelize
 data class Encryption(
     val provider: EncryptionProvider,
-    var providerData: @RawValue Any,
+    var providerData: LitProtocolData,
 ): Parcelable
 
 @Parcelize

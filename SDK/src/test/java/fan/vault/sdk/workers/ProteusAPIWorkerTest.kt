@@ -42,7 +42,7 @@ class ProteusAPIWorkerTest {
 
     @Test
     fun shouldGetCreatorsForMintAddress() {
-        val mintAddress = "2wWip65h8rB2hYBC9pRAXRZDbTpkX5jHWU8VLKLwV7hy"
+        val mintAddress = "3ojqGNDMAeNGugiaAgMM3chbVt6mHpy8E2S38PAeH7kb"
 
         runBlocking {
             val resp = instance().getCreatorProfile(mintAddress)
@@ -52,7 +52,7 @@ class ProteusAPIWorkerTest {
 
     @Test
     fun shouldGetCreatorsForCollectionMintAddress() {
-        val collectionMintAddress = "D3pdGfmudraFbf35aJnyz3BvGc4Sn8vuC7yoJNGSdSPD"
+        val collectionMintAddress = "3QLZVcYGPRfvik2pXZVptTXnWYXy6H3Nz9wpEw5gxKwJ"
 
         runBlocking {
             val resp = instance().getCollectionCreatorProfile(collectionMintAddress)
