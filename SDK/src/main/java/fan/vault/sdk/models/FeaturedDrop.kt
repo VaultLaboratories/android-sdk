@@ -1,7 +1,10 @@
 package fan.vault.sdk.models
 
 import java.util.*
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class FeaturedDrop(
     val id: String,
     val dropId: String,
@@ -12,7 +15,7 @@ data class FeaturedDrop(
     var price: Int,
     var creators: List<CreatorNFTProfile>,
     var type: DMCTypes,
-) {
+): Parcelable {
 
     companion object {
         fun create(
