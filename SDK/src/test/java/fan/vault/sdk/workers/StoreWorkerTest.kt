@@ -3,6 +3,7 @@ package fan.vault.sdk.workers
 import fan.vault.sdk.models.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
@@ -30,6 +31,16 @@ class StoreWorkerTest {
             whenever(mockProteusApi.getCollectionCreatorProfile(collectionMint)).thenReturn(listOf(mock(CreatorNFTProfile::class.java)))
             val storeWorker = StoreWorker(mockProteusApi)
             assertEquals(1, storeWorker.getFeaturedDrops().size)
+        }
+    }
+
+    @Ignore
+    @Test
+    fun getDevFeaturedDrops_returnsSomeDrops() {
+        runBlocking {
+            val storeWorker = StoreWorker(ProteusAPIWorker.create())
+            val featuredDrops = storeWorker.getFeaturedDrops()
+            assertEquals(true, featuredDrops.isNotEmpty())
         }
     }
 

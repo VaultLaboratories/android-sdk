@@ -16,7 +16,7 @@ data class FeaturedDrop(
 
     companion object {
         fun create(
-            startDate: Long,
+            startDateSeconds: Long,
             dropId: String,
             variant: JsonDropVariant,
             creators: List<CreatorNFTProfile>
@@ -27,7 +27,7 @@ data class FeaturedDrop(
                 candyMachineId = variant.candyMachine,
                 name = variant.collectionMetadata.name,
                 image = variant.collectionMetadata.image,
-                startDate = Date(startDate),
+                startDate = Date(startDateSeconds * 1000),
                 price = variant.priceUsdCents.toInt(), //TODO: priceUsdCents should be being changed to an Int
                 creators = creators,
                 type = variant.collectionMetadata.attributes?.firstOrNull { it.traitType == "type" }?.value?.let {
