@@ -1,6 +1,8 @@
 package fan.vault.sdk.models
 
+import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.parcelize.Parcelize
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonDrop(
@@ -23,6 +25,7 @@ data class JsonDropData(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Parcelize
 data class JsonDropVariant(
     val candyMachine: String,
     val collectionMint: String,
@@ -30,4 +33,4 @@ data class JsonDropVariant(
     var collectionMetadata: JsonMetadataExt,
     val itemsLoaded: Number,
     val itemsRemaining: Number
-)
+) : Parcelable
