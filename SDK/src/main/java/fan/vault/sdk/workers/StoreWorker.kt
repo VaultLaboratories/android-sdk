@@ -3,7 +3,7 @@ package fan.vault.sdk.workers
 import fan.vault.sdk.models.CreatorNFTProfile
 import fan.vault.sdk.models.FeaturedDrop
 import fan.vault.sdk.models.JsonDropVariant
-import fan.vault.sdk.models.JsonFeaturedDrop
+import fan.vault.sdk.models.JsonDrop
 
 class StoreWorker(val proteusAPIWorker: ProteusAPIWorker) {
 
@@ -19,4 +19,4 @@ class StoreWorker(val proteusAPIWorker: ProteusAPIWorker) {
             }
 }
 
-data class VariantCreatorProfilesPair(val drop: JsonFeaturedDrop, val variant: JsonDropVariant, val creatorNFTProfiles: List<CreatorNFTProfile>)
+data class VariantCreatorProfilesPair(val drop: JsonDrop, val variant: JsonDropVariant, val creatorNFTProfiles: List<CreatorNFTProfile>)

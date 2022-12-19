@@ -60,6 +60,14 @@ class ProteusAPIWorkerTest {
         }
     }
 
+    @Test
+    fun shouldGetFeaturedDrops(){
+        runBlocking {
+            val featuredDrops = instance().getFeaturedDrops()
+            assertTrue(featuredDrops.isNotEmpty())
+        }
+    }
+
     private fun instance() =
         ProteusAPIWorker.create()
 }
