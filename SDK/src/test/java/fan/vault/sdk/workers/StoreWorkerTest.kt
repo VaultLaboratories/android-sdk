@@ -43,7 +43,6 @@ class StoreWorkerTest {
         runBlocking {
             val storeWorker = StoreWorker(ProteusAPIWorker.create())
             val featuredDrops = storeWorker.getFeaturedDrops()
-            println(featuredDrops[0])
             assertEquals(true, featuredDrops.isNotEmpty())
         }
     }
