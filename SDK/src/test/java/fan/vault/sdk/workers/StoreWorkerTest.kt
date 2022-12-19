@@ -38,12 +38,12 @@ class StoreWorkerTest {
         }
     }
 
-    @Ignore
     @Test
     fun getDevFeaturedDrops_returnsSomeDrops() {
         runBlocking {
             val storeWorker = StoreWorker(ProteusAPIWorker.create())
             val featuredDrops = storeWorker.getFeaturedDrops()
+            println(featuredDrops[0])
             assertEquals(true, featuredDrops.isNotEmpty())
         }
     }
