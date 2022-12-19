@@ -1,17 +1,21 @@
 package fan.vault.sdk.models
 
 import android.os.Parcelable
-import com.fasterxml.jackson.annotation.JsonGetter
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class DMCTypes(val text: String): Parcelable {
-    SINGLE("dmc/single"),
-    EP("dmc/ep"),
-    ALBUM("dmc/album");
+enum class DMCTypes : Parcelable {
+    @JsonProperty("dmc/single")
+    @SerializedName("dmc/single")
+    SINGLE,
 
-    companion object {
-        fun fromText(text: String?) = values().firstOrNull { it.text == text }
-    }
+    @JsonProperty("dmc/ep")
+    @SerializedName("dmc/ep")
+    EP,
+
+    @JsonProperty("dmc/album")
+    @SerializedName("dmc/album")
+    ALBUM;
 }

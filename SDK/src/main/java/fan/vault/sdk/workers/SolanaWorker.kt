@@ -53,7 +53,7 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
         return candidates
             .mapNotNull { it.get() }
             .filter { nft ->
-                allowedDMCTypes?.let { allowedDMCTypes.contains(DMCTypes.fromText(nft.metadata?.type)) } ?: true
+                allowedDMCTypes?.let { allowedDMCTypes.contains(nft.metadata?.type) } ?: true
             }
             .also {
                 it.map { it.metadata?.files = mapFileExt(it) }

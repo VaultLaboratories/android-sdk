@@ -3,19 +3,17 @@ package fan.vault.sdk.models
 import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonClass(generateAdapter = true)
 data class JsonMetadataExt(
     val name: String,
     val description: String?,
     val symbol: String,
     val attributes: List<Trait>?,
-    val type: String,
+     val type: DMCTypes,
     val image: String,
     var files: @RawValue List<Any>,
     val items: List<JsonMetadataItemExt>,
