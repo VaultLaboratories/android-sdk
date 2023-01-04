@@ -3,7 +3,6 @@ package fan.vault.sdk.workers
 import fan.vault.sdk.models.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
@@ -28,13 +27,16 @@ class StoreWorkerTest {
             val jsonFeaturedDrop = createJsonFeaturedDrop(jsonDropVariant)
             val jsonFeaturedDropList = listOf(jsonFeaturedDrop)
             whenever(mockProteusApi.getFeaturedDrops()).thenReturn(jsonFeaturedDropList)
-            whenever(mockProteusApi.getCollectionCreatorProfile(collectionMint)).thenReturn(listOf(mock(CreatorNFTProfile::class.java)))
+            whenever(mockProteusApi.getCollectionCreatorProfile(collectionMint)).thenReturn(
+                listOf(
+                    mock(CreatorNFTProfile::class.java)
+                )
+            )
             val storeWorker = StoreWorker(mockProteusApi)
             assertEquals(1, storeWorker.getFeaturedDrops().size)
         }
     }
 
-    @Ignore
     @Test
     fun getDevFeaturedDrops_returnsSomeDrops() {
         runBlocking {
@@ -48,10 +50,28 @@ class StoreWorkerTest {
         const val collectionMint = "collectionMintId"
     }
 
-    private fun createJsonDropVariant() = JsonDropVariant("candyMachine", 999, collectionMint,
-        JsonMetadataExt("name", "description", "symbol", listOf(), DMCTypes.SINGLE, "image", emptyList(), emptyList(), emptyList()))
+    private fun createJsonDropVariant() = DropVariant(
+        "candyMachine", collectionMint, 999,
+        JsonMetadataExt(
+            "name",
+            "description",
+            "symbol",
+            listOf(),
+            DMCTypes.SINGLE,
+            "image",
+            emptyList(),
+            emptyList(),
+            emptyList(),
+        ),
+        100,
+        50
+    )
 
-    private fun createJsonFeaturedDrop(variant: JsonDropVariant) = JsonFeaturedDrop("id",
-        JsonFeaturedDropData(listOf(), 1670947003),
-        listOf( variant))
+    private fun createJsonFeaturedDrop(variant: DropVariant) = Drop(
+        "id",
+        "store",
+        DropData("slug", "", "", "", "", 100, 1670947003),
+        listOf("creatorIds"),
+        listOf(variant)
+    )
 }

@@ -18,7 +18,7 @@ data class JsonMetadataExt(
     var files: @RawValue List<Any>,
     val items: List<JsonMetadataItemExt>,
     val links: List<Link>?
-): Parcelable
+) : Parcelable
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,22 +30,22 @@ data class JsonMetadataItemExt(
     val preview: Boolean?,
     val name: String?,
     val description: String?
-): Parcelable
+) : Parcelable
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class JsonMetadataFileExt (
+data class JsonMetadataFileExt(
     val uri: String,
     val mime: String,
     val id: String,
     var encryption: Encryption?,
     var metadata: @RawValue Any?,
     val streamableUri: String?,
-): Parcelable
+) : Parcelable
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class JsonMetadataAudioFileExt (
+data class JsonMetadataAudioFileExt(
     val uri: String,
     val mime: String,
     val id: String,
@@ -53,7 +53,7 @@ data class JsonMetadataAudioFileExt (
     var metadata: MusicMetadata?,
     val streamableUri: String?,
     val kbps: Number? // this is supposed to be mandatory but is not currently included in examples
-): Parcelable
+) : Parcelable
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -78,19 +78,19 @@ data class MusicMetadata(
     val publisher: String?,
     val recordLable: String?,
     val explicit: Boolean?
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Encryption(
     val provider: EncryptionProvider,
     var providerData: LitProtocolData,
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class LitProtocolData(
     val accessControlConditions: List<AccessControlConditions>,
     val encryptedSymmetricKey: String
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Link(
@@ -102,4 +102,4 @@ data class Link(
 data class Trait(
     @JsonProperty("trait_type") val traitType: String,
     val value: String
-): Parcelable
+) : Parcelable
