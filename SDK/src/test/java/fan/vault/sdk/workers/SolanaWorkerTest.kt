@@ -78,7 +78,9 @@ class SolanaWorkerTest {
             val nfts = worker
                 .listNFTsWithMetadata("58Ss4MQ6CuhPcA49fQmLphPMVzKy6MLueUTPqrdJ3mnj", includeCreatorData = false)
 
+            println(nfts[0].nft.collection)
             nfts.map {
+
                 assertEquals(DMCTypes.ALBUM, it.metadata?.type)
                 it.metadata?.files?.filterIsInstance<JsonMetadataAudioFileExt>()
                     ?.map { file ->

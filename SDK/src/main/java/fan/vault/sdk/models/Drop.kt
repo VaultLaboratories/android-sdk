@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import kotlinx.parcelize.Parcelize
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class JsonDrop(
+data class Drop(
     val id: String,
     val store: String,
-    val data: JsonDropData,
+    val data: DropData,
     val creators: List<String>,
-    val variants: List<JsonDropVariant>
+    val variants: List<DropVariant>
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class JsonDropData(
+data class DropData(
     val slug: String,
     val name: String,
     val image: String,
@@ -26,7 +26,7 @@ data class JsonDropData(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Parcelize
-data class JsonDropVariant(
+data class DropVariant(
     val candyMachine: String,
     val collectionMint: String,
     val priceUsdCents: Int,

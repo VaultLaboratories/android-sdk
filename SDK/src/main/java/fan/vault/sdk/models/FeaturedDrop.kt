@@ -10,14 +10,14 @@ data class FeaturedDrop(
     val dropId: String,
     var startDate: Date?,
     var creators: List<CreatorNFTProfile>,
-    var variant: JsonDropVariant
+    var variant: DropVariant
 ) : Parcelable {
 
     companion object {
         fun create(
             startDateSeconds: Long,
             dropId: String,
-            variant: JsonDropVariant,
+            variant: DropVariant,
             creators: List<CreatorNFTProfile>
         ) =
             FeaturedDrop(

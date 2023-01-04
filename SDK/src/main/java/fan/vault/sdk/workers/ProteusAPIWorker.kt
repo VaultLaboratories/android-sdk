@@ -41,7 +41,7 @@ interface ProteusAPIWorker {
     ): List<CreatorNFTProfile>
 
     @GET("/stores/featured")
-    suspend fun getFeaturedDrops(): List<JsonDrop>
+    suspend fun getFeaturedDrops(): List<Drop>
 
     companion object {
         private const val BASE_URL = "https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/"

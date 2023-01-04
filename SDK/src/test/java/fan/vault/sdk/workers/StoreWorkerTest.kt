@@ -3,7 +3,6 @@ package fan.vault.sdk.workers
 import fan.vault.sdk.models.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
@@ -51,7 +50,7 @@ class StoreWorkerTest {
         const val collectionMint = "collectionMintId"
     }
 
-    private fun createJsonDropVariant() = JsonDropVariant(
+    private fun createJsonDropVariant() = DropVariant(
         "candyMachine", collectionMint, 999,
         JsonMetadataExt(
             "name",
@@ -68,10 +67,10 @@ class StoreWorkerTest {
         50
     )
 
-    private fun createJsonFeaturedDrop(variant: JsonDropVariant) = JsonDrop(
+    private fun createJsonFeaturedDrop(variant: DropVariant) = Drop(
         "id",
         "store",
-        JsonDropData("slug", "", "", "", "", 100, 1670947003),
+        DropData("slug", "", "", "", "", 100, 1670947003),
         listOf("creatorIds"),
         listOf(variant)
     )
