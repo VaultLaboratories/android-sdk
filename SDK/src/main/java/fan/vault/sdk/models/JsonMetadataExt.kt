@@ -15,6 +15,7 @@ data class JsonMetadataExt(
     val attributes: List<Trait>?,
     val type: DMCTypes,
     val image: String,
+    val collectionNumber: Int?,
     var files: @RawValue List<Any>,
     val items: List<JsonMetadataItemExt>,
     val links: List<Link>?
