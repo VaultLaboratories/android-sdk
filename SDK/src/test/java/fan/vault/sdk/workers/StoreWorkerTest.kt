@@ -59,6 +59,7 @@ class StoreWorkerTest {
             listOf(),
             DMCTypes.SINGLE,
             "image",
+            1,
             emptyList(),
             emptyList(),
             emptyList(),
