@@ -17,14 +17,31 @@ interface ProteusAPIWorker {
     suspend fun getEncryptionKey(@Body body: EncryptionKeyRequest): EncryptionKeyResponse
 
     @POST("/mint/otp")
+    @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("requestOneTimePasswordV2()"))
     suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): String
 
+    @POST("/mint/otp-v2")
+    suspend fun requestOneTimePasswordV2(@Body body: OneTimePasswordRequestV2): Response<String>
+
     @GET("/profiles/social-wallet/{userEmailAddress}")
+    @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("getSocialWalletAddressV2()"))
     suspend fun getSocialWalletAddress(@Path("userEmailAddress") userEmailAddress: String): SocialWalletResponse
+
+    @GET("/profiles/social-wallet-v2/{provider}/{guid}")
+    suspend fun getSocialWalletAddressV2(@Path("provider") provider: String, @Path("guid") guid: String): Response<SocialWalletResponse>
 
     @GET("/mint/{userEmailAddress}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransaction(
         @Path("userEmailAddress") userEmailAddress: String,
+        @Path("appWallet") appWallet: String,
+        @Path("mint") mint: String,
+        @Path("otp") otp: String
+    ): Response<TransactionResponse>
+
+    @GET("/mint/{guid}/{provider}/{appWallet}/{mint}/{otp}")
+    suspend fun getSocialToAppWalletClaimTransactionV2(
+        @Path("guid") guid: String,
+        @Path("provider") provider: AuthProviders,
         @Path("appWallet") appWallet: String,
         @Path("mint") mint: String,
         @Path("otp") otp: String

@@ -1,8 +1,6 @@
 package fan.vault.sdk.utils
 
-import android.os.Build.VERSION_CODES.P
 import com.google.gson.GsonBuilder
-import com.solana.core.HotAccount.Companion.fromJson
 import fan.vault.sdk.models.APIError
 
 class APIUtils {
@@ -14,6 +12,8 @@ class APIUtils {
                 val apiError = gson.fromJson(apiErrorBody, APIError::class.java)
                 when (apiError.error){
                     "Incorrect OTP or Email" -> IncorrectOTPOrEmailException(apiError.error)
+                    "Could not verify Auth token" -> AuthTokenVerificationFailed(apiError.error)
+                    "Don't recognise Auth provider" -> UnrecognisedAuthProvider(apiError.error)
                     else -> Exception(apiErrorBody)
                 }
             } catch (_: Exception) {
@@ -24,3 +24,7 @@ class APIUtils {
 }
 
 class IncorrectOTPOrEmailException(message: String) : Exception(message)
+
+class AuthTokenVerificationFailed(message: String) : Exception(message)
+
+class UnrecognisedAuthProvider(message: String) : Exception(message)
