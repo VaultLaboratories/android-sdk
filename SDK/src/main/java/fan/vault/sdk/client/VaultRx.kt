@@ -31,6 +31,8 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      * @param provider authentication provider: google.com; apple.com; email
      * @param guid this is either the Email address to send OTP to or the UID from the
      * authentication provider
+     * @param token this is the ID token retrieve from the Auth provider (google or apple)
+     * @param nonce this is the nonce value returned from auth with Apple ID, only needed for Apple
      * @throws error if it can't verify the token passed in for the provider or if the provider is
      * not recognised
      */
