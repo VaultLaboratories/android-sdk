@@ -20,10 +20,10 @@ interface ProteusAPIWorker {
     suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): Response<String>
 
     @GET("/profiles/v2/social-wallet/{guid}/{provider}")
-    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
+    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: AuthProviders): Response<SocialWalletResponse>
 
     @GET("/mint/v2/{guid}/{provider}/{appWallet}/{mint}/{otp}")
-    suspend fun getSocialToAppWalletClaimTransactionV2(
+    suspend fun getSocialToAppWalletClaimTransaction(
         @Path("guid") guid: String,
         @Path("provider") provider: AuthProviders,
         @Path("appWallet") appWallet: String,

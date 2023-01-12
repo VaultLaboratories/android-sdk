@@ -17,7 +17,7 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         appWallet: Account,
         withOtp: String
     ): String? {
-        val txResponse = proteusAPIWorker.getSocialToAppWalletClaimTransactionV2(
+        val txResponse = proteusAPIWorker.getSocialToAppWalletClaimTransaction(
             guid = guid,
             provider = provider,
             appWallet = appWallet.publicKey.toBase58(),
