@@ -13,7 +13,7 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
     suspend fun claim(
         nft: PublicKey,
         guid: String,
-        provider: AuthProviders,
+        provider: String,
         appWallet: Account,
         withOtp: String
     ): String? {

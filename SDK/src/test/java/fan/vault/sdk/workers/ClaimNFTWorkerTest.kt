@@ -53,7 +53,7 @@ class ClaimNFTWorkerTest {
             whenever(
                 worker.proteusAPIWorker.getSocialToAppWalletClaimTransaction(
                     guid = userEmailAddress,
-                    provider = AuthProviders.EMAIL,
+                    provider = AuthProviders.password,
                     appWallet = appWallet.publicKey.toBase58(),
                     mint = mint.toBase58(),
                     otp = otp
@@ -66,7 +66,7 @@ class ClaimNFTWorkerTest {
                 worker.claim(
                     nft = mint,
                     guid = userEmailAddress,
-                    provider = AuthProviders.EMAIL,
+                    provider = AuthProviders.password,
                     appWallet = appWallet,
                     withOtp = otp
                 )

@@ -16,16 +16,16 @@ interface ProteusAPIWorker {
     @POST("/litprotocol/encryption-key")
     suspend fun getEncryptionKey(@Body body: EncryptionKeyRequest): EncryptionKeyResponse
 
-    @POST("/mint/v2/otp")
+    @POST("/v2/mint/otp")
     suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): Response<String>
 
-    @GET("/profiles/v2/social-wallet/{guid}/{provider}")
-    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: AuthProviders): Response<SocialWalletResponse>
+    @GET("/v2/profiles/social-wallet/{guid}/{provider}")
+    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
 
-    @GET("/mint/v2/{guid}/{provider}/{appWallet}/{mint}/{otp}")
+    @GET("/v2/mint/{guid}/{provider}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransaction(
         @Path("guid") guid: String,
-        @Path("provider") provider: AuthProviders,
+        @Path("provider") provider: String,
         @Path("appWallet") appWallet: String,
         @Path("mint") mint: String,
         @Path("otp") otp: String
@@ -44,10 +44,10 @@ interface ProteusAPIWorker {
     @GET("/stores/featured")
     suspend fun getFeaturedDrops(): List<Drop>
 
-    @GET("/mint/v2/owned/by-social-wallet/{guid}/{provider}")
+    @GET("/v2/mint/owned/by-social-wallet/{guid}/{provider}")
     suspend fun getSocialWalletMints(
         @Path("guid") guid: String,
-        @Path("provider") provider: AuthProviders
+        @Path("provider") provider: String
     ): List<NftWithMetadata>
 
     companion object {

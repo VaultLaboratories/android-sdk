@@ -57,7 +57,7 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
                 allowedDMCTypes?.let { allowedDMCTypes.contains(nft.metadata?.type) } ?: true
             }
             .also {
-                it.map { nftWithMetadata ->  nftWithMetadata.metadata?.let { it.files = MappingUtils.mapFileExt(it) }  }
+                it.map { it.metadata?.files = mapFileExt(it) }
             }
             .mapNotNull {
                 when (includeCreatorData) {
@@ -69,6 +69,47 @@ class SolanaWorker(val proteusAPIWorker: ProteusAPIWorker) {
                     }
                 }
             }
+    }
+
+    private fun mapFileExt(nft: NftWithMetadata): List<Any> {
+        var newFileList: List<Any> = emptyList()
+        nft.metadata?.files?.map { anyFile ->
+            val mime = (anyFile as java.util.LinkedHashMap<*, *>)["mime"].toString()
+            newFileList = if (mime.contains("audio")) {
+                newFileList.plus(
+                    jacksonObjectMapper().convertValue(
+                        anyFile,
+                        JsonMetadataAudioFileExt::class.java
+                    ).apply {
+                        this.encryption?.let { this.encryption = mapEncryptionData(it) }
+                    }
+                )
+            } else {
+                newFileList.plus(
+                    jacksonObjectMapper().convertValue(
+                        anyFile,
+                        JsonMetadataFileExt::class.java
+                    ).apply {
+                        this.encryption?.let { this.encryption = mapEncryptionData(it) }
+                    }
+                )
+            }
+        }
+        return newFileList
+    }
+
+    private fun mapEncryptionData(encryption: Encryption): Encryption {
+        return if (encryption.provider == EncryptionProvider.LIT_PROTOCOL) {
+            Encryption(
+                EncryptionProvider.LIT_PROTOCOL,
+                jacksonObjectMapper().convertValue(
+                    encryption.providerData,
+                    LitProtocolData::class.java
+                )
+            )
+        } else {
+            encryption
+        }
     }
 
     fun fetchArweaveMetadata(

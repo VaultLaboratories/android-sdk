@@ -2,8 +2,8 @@ package fan.vault.sdk.client
 
 import android.content.Context
 import com.solana.core.PublicKey
-import fan.vault.sdk.models.AuthProviders
 import fan.vault.sdk.models.JsonMetadataFileExt
+import fan.vault.sdk.models.NftWithMetadata
 import fan.vault.sdk.models.OneTimePasswordRequest
 import fan.vault.sdk.utils.APIUtils
 
@@ -49,13 +49,25 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
      *
      * @param provider auth provider for desired Social Wallet.
      * @param guid guid (email or UID from auth provider) for desired Social Wallet.
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
     suspend fun listClaimableNFTsLinkedTo(
         guid: String,
-        provider: AuthProviders
-    ) =
-        proteusAPIWorker.getSocialWalletMints(guid, provider)
+        provider: String,
+        includeCreatorData: Boolean = true
+    ): List<NftWithMetadata> {
+        val socialWalletReq = proteusAPIWorker.getSocialWalletAddress(guid, provider)
+        if (socialWalletReq.isSuccessful) {
+            socialWalletReq.body()?.wallet?.let {
+                return solanaWorker.listNFTsWithMetadata(
+                    it,
+                    includeCreatorData = includeCreatorData
+                )
+            }
+        }
+        throw APIUtils.classifyErrorIfKnown(socialWalletReq.errorBody().toString())
+    }
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.
@@ -90,7 +102,7 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
     suspend fun initiateClaimNFTLinkedTo(
         nftMint: PublicKey,
         guid: String,
-        provider: AuthProviders,
+        provider: String,
         newOtp: String? = null
     ): String? {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")

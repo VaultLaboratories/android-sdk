@@ -45,17 +45,31 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     }
 
     /**
-     * List claimable NFTs from the Social Wallet associated with the given guid and auth provider.
+     * List claimable NFTs from the Social Wallet associated with the given GUID and auth provider.
      *
      * @param provider auth provider for desired Social Wallet.
      * @param guid guid (email or UID from auth provider) for desired Social Wallet.
-     * @return List of claimable NFTs from Social Wallet and their associated metadata.
+     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
+     * @ return List of claimable NFTs from Social Wallet and their associated metadata.
      */
-    suspend fun listClaimableNFTsLinkedToV2(
-        provider: AuthProviders,
-        guid: String
-    ) = rxSingle {
-        proteusAPIWorker.getSocialWalletMints(guid, provider)
+    suspend fun listClaimableNFTsLinkedTo(
+        guid: String,
+        provider: String,
+        includeCreatorData: Boolean = true
+    ): Single<List<NftWithMetadata>> {
+        return rxSingle {
+            val socialWalletReq = proteusAPIWorker.getSocialWalletAddress(guid, provider)
+            if (socialWalletReq.isSuccessful) {
+                socialWalletReq.body()?.wallet?.let {
+                    solanaWorker.listNFTsWithMetadata(
+                        it,
+                        includeCreatorData = includeCreatorData
+                    )
+                }
+            }
+            throw APIUtils.classifyErrorIfKnown(socialWalletReq.errorBody().toString())
+        }
+
     }
 
     /**
@@ -94,7 +108,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     suspend fun initiateClaimNFTLinkedToV2(
         nftMint: PublicKey,
         guid: String,
-        provider: AuthProviders,
+        provider: String,
         newOtp: String? = null
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
