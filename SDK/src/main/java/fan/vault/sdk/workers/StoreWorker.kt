@@ -11,7 +11,6 @@ class StoreWorker(val proteusAPIWorker: ProteusAPIWorker) {
     suspend fun getFeaturedDrops(): List<FeaturedDrop> =
         proteusAPIWorker.getFeaturedDrops()
             .map { drop ->
-                println(drop)
                 drop.variants.map { dropVariant ->
                     dropVariant.collectionMetadata.files =
                         MappingUtils.mapFileExt(dropVariant.collectionMetadata)
