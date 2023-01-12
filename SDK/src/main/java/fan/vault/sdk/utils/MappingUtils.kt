@@ -8,7 +8,7 @@ class MappingUtils {
         fun mapFileExt(metadata: JsonMetadataExt): List<Any> {
             var newFileList: List<Any> = emptyList()
             metadata.files.map { anyFile ->
-                val mime = (anyFile as java.util.LinkedHashMap<*, *>)["mime"].toString()
+                val mime = (anyFile as com.google.gson.internal.LinkedTreeMap<*, *>)["mime"].toString()
                 newFileList = if (mime.contains("audio")) {
                     newFileList.plus(
                         jacksonObjectMapper().convertValue(

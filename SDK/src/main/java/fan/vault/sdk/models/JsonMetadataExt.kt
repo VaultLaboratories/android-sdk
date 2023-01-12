@@ -47,7 +47,7 @@ data class JsonMetadataFileExt(
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonMetadataAudioFileExt(
-    val uri: String,
+    val uri: String?,
     val mime: String,
     val id: String,
     var encryption: Encryption?,
