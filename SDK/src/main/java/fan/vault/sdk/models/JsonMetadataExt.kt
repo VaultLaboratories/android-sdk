@@ -47,13 +47,22 @@ data class JsonMetadataFileExt(
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonMetadataAudioFileExt(
-    val uri: String,
+    val uri: String?,
     val mime: String,
     val id: String,
     var encryption: Encryption?,
     var metadata: MusicMetadata?,
     val streamableUri: String?,
+    val preview: AudioFilePreview?,
     val kbps: Number? // this is supposed to be mandatory but is not currently included in examples
+) : Parcelable
+
+@Parcelize
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class AudioFilePreview(
+    val uri: String,
+    val mime: String,
+    val duration: Number
 ) : Parcelable
 
 @Parcelize
