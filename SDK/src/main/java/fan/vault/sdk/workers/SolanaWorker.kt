@@ -2,7 +2,6 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import android.util.Log
-import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.metaplex.lib.Metaplex
@@ -18,7 +17,6 @@ import com.solana.core.Transaction
 import com.solana.networking.OkHttpNetworkingRouter
 import com.solana.networking.RPCEndpoint
 import fan.vault.sdk.models.*
-import fan.vault.sdk.utils.MappingUtils
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
