@@ -16,27 +16,11 @@ interface ProteusAPIWorker {
     @POST("/litprotocol/encryption-key")
     suspend fun getEncryptionKey(@Body body: EncryptionKeyRequest): EncryptionKeyResponse
 
-    @POST("/mint/otp")
-    @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("requestOneTimePasswordV2()"))
-    suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): String
-
     @POST("/mint/v2/otp")
-    suspend fun requestOneTimePasswordV2(@Body body: OneTimePasswordRequestV2): Response<String>
-
-    @GET("/profiles/social-wallet/{userEmailAddress}")
-    @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("getSocialWalletAddressV2()"))
-    suspend fun getSocialWalletAddress(@Path("userEmailAddress") userEmailAddress: String): SocialWalletResponse
+    suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): Response<String>
 
     @GET("/profiles/v2/social-wallet/{guid}/{provider}")
-    suspend fun getSocialWalletAddressV2(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
-
-    @GET("/mint/{userEmailAddress}/{appWallet}/{mint}/{otp}")
-    suspend fun getSocialToAppWalletClaimTransaction(
-        @Path("userEmailAddress") userEmailAddress: String,
-        @Path("appWallet") appWallet: String,
-        @Path("mint") mint: String,
-        @Path("otp") otp: String
-    ): Response<TransactionResponse>
+    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
 
     @GET("/mint/v2/{guid}/{provider}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransactionV2(

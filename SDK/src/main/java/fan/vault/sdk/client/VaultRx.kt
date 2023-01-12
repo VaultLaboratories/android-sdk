@@ -10,26 +10,11 @@ import kotlinx.coroutines.rx3.rxSingle
 class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
 
     /**
-     * Request that a new OTP be sent to the given email address.
-     *
-     * @param emailAddress Email address to send OTP to.
-     */
-    @Deprecated("Old social wallet format")
-    fun requestGenerateOtp(emailAddress: String) = rxSingle {
-        proteusAPIWorker.requestOneTimePassword(
-            OneTimePasswordRequest(
-                emailAddress,
-                walletWorker.loadWallet().publicKey.toBase58()
-            )
-        )
-    }
-
-    /**
      * Based on the auth provider a new OTP will be returned
      * (apple/google) or sent via email to the specified address
      *
      * @param provider authentication provider: google.com; apple.com; email
-     * @param guid this is either the Email address to send OTP to or the UID from the
+     * @param guid this is either the Email address to send OTP to or the UID from the auth provider
      * authentication provider
      * @param token this is the ID token retrieve from the Auth provider (google or apple)
      * @param nonce this is the nonce value returned from auth with Apple ID, only needed for Apple
@@ -43,8 +28,8 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
         nonce: String?
     ): Single<String> {
         return rxSingle {
-            val otpRequest = proteusAPIWorker.requestOneTimePasswordV2(
-                OneTimePasswordRequestV2(
+            val otpRequest = proteusAPIWorker.requestOneTimePassword(
+                OneTimePasswordRequest(
                     guid,
                     provider,
                     walletWorker.loadWallet().publicKey.toBase58(),
@@ -57,21 +42,6 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
             }
             throw APIUtils.classifyErrorIfKnown(otpRequest.errorBody()?.string())
         }
-    }
-
-    /**
-     * List claimable NFTs from the Social Wallet associated with the given email address.
-     *
-     * @param emailAddress Email address for desired Social Wallet.
-     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
-     * @return List of claimable NFTs from Social Wallet and their associated metadata.
-     */
-    @Deprecated("Old social wallet format")
-    fun listClaimableNFTsLinkedTo(
-        emailAddress: String,
-        includeCreatorData: Boolean = true
-    ) = rxSingle {
-        claimNFTWorker.getClaimableNfts(emailAddress, includeCreatorData)
     }
 
     /**
@@ -116,33 +86,6 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
      * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
      *
      * @param nftMint Mint address of NFT being claimed.
-     * @param emailAddress Email address associated with user's Social Wallet.
-     * @param newOtp One time password linking user's email and device app wallet. If omitted, will attempt to use cached OTP from any previous claims.
-     * @return Transaction result
-     */
-    @Deprecated("Old social wallet format")
-    fun initiateClaimNFTLinkedTo(
-        nftMint: PublicKey,
-        emailAddress: String,
-        newOtp: String? = null
-    ): Single<String> {
-        val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
-        return rxSingle {
-            claimNFTWorker.claim(
-                nftMint,
-                emailAddress,
-                walletWorker.loadWallet(),
-                otp
-            )?.also {
-                saveOtp(otp)
-            } ?: ""
-        }
-    }
-
-    /**
-     * Initiate a claim to transfer an NFT from a user's Social Wallet to their App Wallet.
-     *
-     * @param nftMint Mint address of NFT being claimed.
      * @param guid Email address or Auth UID associated with user's Social Wallet.
      * @param provider auth provider (google.com, apple.com, email)
      * @param newOtp One time password linking user's email and device app wallet. If omitted, will attempt to use cached OTP from any previous claims.
@@ -156,7 +99,7 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     ): Single<String> {
         val otp = newOtp ?: getOtp() ?: throw Throwable("OTP cannot be null")
         return rxSingle {
-            claimNFTWorker.claimV2(
+            claimNFTWorker.claim(
                 nftMint,
                 guid,
                 provider,
