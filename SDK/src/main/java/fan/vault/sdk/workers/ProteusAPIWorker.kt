@@ -16,15 +16,16 @@ interface ProteusAPIWorker {
     @POST("/litprotocol/encryption-key")
     suspend fun getEncryptionKey(@Body body: EncryptionKeyRequest): EncryptionKeyResponse
 
-    @POST("/mint/otp")
-    suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): String
+    @POST("/v2/mint/otp")
+    suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): Response<String>
 
-    @GET("/profiles/social-wallet/{userEmailAddress}")
-    suspend fun getSocialWalletAddress(@Path("userEmailAddress") userEmailAddress: String): SocialWalletResponse
+    @GET("/v2/profiles/social-wallet/{guid}/{provider}")
+    suspend fun getSocialWalletAddress(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
 
-    @GET("/mint/{userEmailAddress}/{appWallet}/{mint}/{otp}")
+    @GET("/v2/mint/{guid}/{provider}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransaction(
-        @Path("userEmailAddress") userEmailAddress: String,
+        @Path("guid") guid: String,
+        @Path("provider") provider: String,
         @Path("appWallet") appWallet: String,
         @Path("mint") mint: String,
         @Path("otp") otp: String
@@ -42,6 +43,12 @@ interface ProteusAPIWorker {
 
     @GET("/stores/featured")
     suspend fun getFeaturedDrops(): List<Drop>
+
+    @GET("/v2/mint/owned/by-social-wallet/{guid}/{provider}")
+    suspend fun getSocialWalletMints(
+        @Path("guid") guid: String,
+        @Path("provider") provider: String
+    ): List<NftWithMetadata>
 
     companion object {
         private const val BASE_URL = "https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/"

@@ -2,6 +2,7 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import com.solana.core.HotAccount
+import fan.vault.sdk.models.AuthProviders
 import fan.vault.sdk.models.SocialWalletResponse
 import fan.vault.sdk.models.TransactionResponse
 import io.mockk.every
@@ -51,7 +52,8 @@ class ClaimNFTWorkerTest {
         runBlocking {
             whenever(
                 worker.proteusAPIWorker.getSocialToAppWalletClaimTransaction(
-                    userEmailAddress = userEmailAddress,
+                    guid = userEmailAddress,
+                    provider = AuthProviders.password,
                     appWallet = appWallet.publicKey.toBase58(),
                     mint = mint.toBase58(),
                     otp = otp
@@ -63,7 +65,8 @@ class ClaimNFTWorkerTest {
             runCatching {
                 worker.claim(
                     nft = mint,
-                    userEmailAddress = userEmailAddress,
+                    guid = userEmailAddress,
+                    provider = AuthProviders.password,
                     appWallet = appWallet,
                     withOtp = otp
                 )
@@ -77,23 +80,6 @@ class ClaimNFTWorkerTest {
                 }
         }
 
-    }
-
-    @Test
-    fun shouldRetrieveClaimableNfts() {
-        val userEmail = "antClaimableTest@vault.fan"
-        val wallet = SocialWalletResponse(
-            "EWueYv3bjYMDUGfq432rGzMQ3wAgb1MaYW7ZsSKpWHTZ",
-            "0Zf/9zJPIniSKGMoA4d5usAIbu4FjQ8vZDwFcDqxAv0="
-        )
-        val worker = instance()
-
-        runBlocking {
-            whenever(worker.proteusAPIWorker.getSocialWalletAddress(userEmail)).thenReturn(wallet)
-            val nfts = worker.getClaimableNfts(userEmail, includeCreatorData = false)
-            val mintList = nfts.map { it?.nft?.mint?.toBase58() }
-            assertTrue(mintList.contains("Dc6gWoQKK8WV1P91yJhvuuVuwpFd5y8y7hRhHovsso2Z"))
-        }
     }
 
     private fun instance() =

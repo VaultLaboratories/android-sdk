@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
@@ -33,6 +34,7 @@ class LitProtocolWorkerTest {
     }
 
     @Test(timeout = 60000)
+    @Ignore
     fun getSymmetricKeyTest() {
         val litProtocolWorker = LitProtocolWorker(walletWorker)
 

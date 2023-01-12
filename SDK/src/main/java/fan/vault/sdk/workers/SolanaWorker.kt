@@ -2,7 +2,6 @@ package fan.vault.sdk.workers
 
 import android.util.Base64
 import android.util.Log
-import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.metaplex.lib.Metaplex
