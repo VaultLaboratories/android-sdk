@@ -15,7 +15,7 @@ enum class AuthProviders(val text: String) : Parcelable {
     @SerializedName("apple.com")
     APPLE("apple.com"),
 
-    @JsonProperty("email")
-    @SerializedName("email")
-    EMAIL("email");
+    @JsonProperty("password")
+    @SerializedName("password")
+    EMAIL("password");
 }

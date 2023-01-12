@@ -12,6 +12,20 @@ class ProteusAPIWorkerTest {
     private val gson = GsonBuilder().create()
 
     @Test
+    fun shouldGetSocialWalletAddress() {
+        val email = "ant@vault.fan"
+        val authProvider = AuthProviders.EMAIL
+        val socialWalletAddress = "CE2yUfCQGUzMi7imdLcGeqnfGBGz2zsmKFtU2d7pTfUC"
+
+        runBlocking {
+            val txResp =
+                instance().getSocialWalletAddress(email, authProvider)
+            assertTrue(txResp.isSuccessful)
+            println(txResp.body())
+        }
+    }
+
+    @Test
     fun shouldGetWrongOTPError() {
         val email = "ant@vault.fan"
         val authProvider = AuthProviders.EMAIL
