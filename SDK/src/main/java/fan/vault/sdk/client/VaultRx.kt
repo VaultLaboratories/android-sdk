@@ -75,19 +75,17 @@ class VaultRx(applicationContext: Context) : VaultBase(applicationContext) {
     }
 
     /**
-     * List claimable NFTs from the Social Wallet associated with the given email address.
+     * List claimable NFTs from the Social Wallet associated with the given guid and auth provider.
      *
      * @param provider auth provider for desired Social Wallet.
      * @param guid guid (email or UID from auth provider) for desired Social Wallet.
-     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
     suspend fun listClaimableNFTsLinkedToV2(
         provider: AuthProviders,
-        guid: String,
-        includeCreatorData: Boolean = true
+        guid: String
     ) = rxSingle {
-        claimNFTWorker.getClaimableNftsV2(provider, guid, includeCreatorData)
+        proteusAPIWorker.getSocialWalletMints(guid, provider)
     }
 
     /**

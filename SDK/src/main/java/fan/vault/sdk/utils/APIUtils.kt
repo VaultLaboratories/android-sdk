@@ -13,7 +13,7 @@ class APIUtils {
                 when (apiError.error){
                     "Incorrect OTP or Email" -> IncorrectOTPOrEmailException(apiError.error)
                     "Could not verify Auth token" -> AuthTokenVerificationFailed(apiError.error)
-                    "Don't recognise Auth provider" -> UnrecognisedAuthProvider(apiError.error)
+                    "Don't recognize Auth provider" -> UnrecognisedAuthProvider(apiError.error)
                     else -> Exception(apiErrorBody)
                 }
             } catch (_: Exception) {

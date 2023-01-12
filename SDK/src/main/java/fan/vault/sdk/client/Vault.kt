@@ -73,19 +73,17 @@ class Vault(applicationContext: Context) : VaultBase(applicationContext) {
         claimNFTWorker.getClaimableNfts(emailAddress, includeCreatorData)
 
     /**
-     * List claimable NFTs from the Social Wallet associated with the given email address.
+     * List claimable NFTs from the Social Wallet associated with the given GUID and auth provider.
      *
      * @param provider auth provider for desired Social Wallet.
      * @param guid guid (email or UID from auth provider) for desired Social Wallet.
-     * @param includeCreatorData Specify if creator metadata retrieval is required. Default=true.
      * @return List of claimable NFTs from Social Wallet and their associated metadata.
      */
     suspend fun listClaimableNFTsLinkedToV2(
-        provider: AuthProviders,
         guid: String,
-        includeCreatorData: Boolean = true
+        provider: AuthProviders
     ) =
-        claimNFTWorker.getClaimableNftsV2(provider, guid, includeCreatorData)
+        proteusAPIWorker.getSocialWalletMints(guid, provider)
 
     /**
      * List claimed NFTs from the user's App Wallet on their current device.

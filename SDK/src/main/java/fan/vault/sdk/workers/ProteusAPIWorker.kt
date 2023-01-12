@@ -20,15 +20,15 @@ interface ProteusAPIWorker {
     @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("requestOneTimePasswordV2()"))
     suspend fun requestOneTimePassword(@Body body: OneTimePasswordRequest): String
 
-    @POST("/mint/otp-v2")
+    @POST("/mint/v2/otp")
     suspend fun requestOneTimePasswordV2(@Body body: OneTimePasswordRequestV2): Response<String>
 
     @GET("/profiles/social-wallet/{userEmailAddress}")
     @Deprecated("Old format for social wallets", replaceWith = ReplaceWith("getSocialWalletAddressV2()"))
     suspend fun getSocialWalletAddress(@Path("userEmailAddress") userEmailAddress: String): SocialWalletResponse
 
-    @GET("/profiles/social-wallet-v2/{provider}/{guid}")
-    suspend fun getSocialWalletAddressV2(@Path("provider") provider: String, @Path("guid") guid: String): Response<SocialWalletResponse>
+    @GET("/profiles/v2/social-wallet/{guid}/{provider}")
+    suspend fun getSocialWalletAddressV2(@Path("guid") guid: String, @Path("provider") provider: String): Response<SocialWalletResponse>
 
     @GET("/mint/{userEmailAddress}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransaction(
@@ -38,7 +38,7 @@ interface ProteusAPIWorker {
         @Path("otp") otp: String
     ): Response<TransactionResponse>
 
-    @GET("/mint/{guid}/{provider}/{appWallet}/{mint}/{otp}")
+    @GET("/mint/v2/{guid}/{provider}/{appWallet}/{mint}/{otp}")
     suspend fun getSocialToAppWalletClaimTransactionV2(
         @Path("guid") guid: String,
         @Path("provider") provider: AuthProviders,
@@ -59,6 +59,12 @@ interface ProteusAPIWorker {
 
     @GET("/stores/featured")
     suspend fun getFeaturedDrops(): List<Drop>
+
+    @GET("/mint/v2/owned/by-social-wallet/{guid}/{provider}")
+    suspend fun getSocialWalletMints(
+        @Path("guid") guid: String,
+        @Path("provider") provider: AuthProviders
+    ): List<NftWithMetadata>
 
     companion object {
         private const val BASE_URL = "https://v0uusuz5j4.execute-api.us-east-2.amazonaws.com/"

@@ -73,6 +73,7 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         }
     }
 
+    @Deprecated("We will fetching claimable NFTs from the API now", ReplaceWith("proteusApi.getSocialWalletMints()"))
     suspend fun getClaimableNfts(
         userEmailAddress: String,
         includeCreatorData: Boolean
@@ -80,22 +81,5 @@ class ClaimNFTWorker(val proteusAPIWorker: ProteusAPIWorker, val solanaWorker: S
         proteusAPIWorker.getSocialWalletAddress(userEmailAddress).let {
             solanaWorker.listNFTsWithMetadata(it.wallet, includeCreatorData = includeCreatorData)
         }
-
-    suspend fun getClaimableNftsV2(
-        provider: AuthProviders,
-        guid: String,
-        includeCreatorData: Boolean
-    ): List<NftWithMetadata> {
-        val socialWalletResponse = proteusAPIWorker.getSocialWalletAddressV2(provider.text, guid)
-
-        if (socialWalletResponse.isSuccessful) {
-            val socialWallet = socialWalletResponse.body() ?: throw Exception()
-            return solanaWorker.listNFTsWithMetadata(
-                socialWallet.wallet,
-                includeCreatorData = includeCreatorData
-            )
-        }
-        throw Error(socialWalletResponse.errorBody().toString())
-    }
 
 }
